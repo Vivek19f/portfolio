@@ -90,3 +90,16 @@ export const SKILLS_DATA = [
   "Angular", "Node.js", "NestJS", "AWS & Azure", "System Design", 
   "Docker", "CI/CD"
 ];
+
+export const BLOGS_DATA = [
+  {
+    title: "Digital Fortress vs. India’s Push for Private User Data: A Reality Check",
+    url: "https://medium.com/@robotChat/digital-fortress-vs-indias-push-for-private-user-data-a-reality-check-ce625914e02c",
+    description: "An analysis of the privacy implications and technical challenges surrounding user data regulation."
+  },
+  {
+    title: "The Ultimate Guide to Django ORM Queries",
+    url: "https://medium.com/@robotChat/getting-started-with-django-queries-c916a625ce59",
+    description: "A comprehensive guide on mastering Django ORM for efficient database querying."
+  }
+];

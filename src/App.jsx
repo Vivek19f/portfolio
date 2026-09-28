@@ -9,6 +9,7 @@ import HomeTab from './components/tabs/HomeTab';
 import ExperienceTab from './components/tabs/ExperienceTab';
 import ProjectsTab from './components/tabs/ProjectsTab';
 import AchievementsTab from './components/tabs/AchievementsTab';
+import BlogsTab from './components/tabs/BlogsTab';
 
 function App() {
   const [isSplineLoaded, setIsSplineLoaded] = useState(false);
@@ -39,6 +40,7 @@ function App() {
             {activeTab === 'experience' && <ExperienceTab setActiveTab={setActiveTab} />}
             {activeTab === 'projects' && <ProjectsTab setActiveTab={setActiveTab} />}
             {activeTab === 'achievements' && <AchievementsTab setActiveTab={setActiveTab} />}
+            {activeTab === 'blogs' && <BlogsTab setActiveTab={setActiveTab} />}
           </AnimatePresence>
 
           {/* Footer Socials */}
