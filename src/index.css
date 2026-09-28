@@ -1,13 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;800&family=Inter:wght@400;500;600&display=swap');
 
 :root {
-  --bg-color: #0b0f19;
+  --bg-color: #072446;
   --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --accent-color: #3b82f6;
-  --accent-glow: rgba(59, 130, 246, 0.5);
-  --glass-bg: rgba(15, 23, 42, 0.4);
-  --glass-border: rgba(255, 255, 255, 0.08);
+  --text-muted: #d6d6d6;
+  --accent-color: #eda72d;
+  --accent-glow: rgba(237, 167, 45, 0.5);
+  --glass-bg: rgba(10, 51, 98, 0.85);
+  --glass-border: rgba(237, 167, 45, 0.2);
 }
 
 * {
@@ -27,6 +27,7 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
+  text-transform: uppercase;
 }
 
 /* Glassmorphism Utilities */
@@ -100,17 +101,22 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .minimalist-header {
-  background: transparent;
-  padding: 32px 48px;
+  background: #0a3362;
+  padding: 24px 48px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 50;
 }
 
 .logo {
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 800;
-  letter-spacing: -1px;
-  background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  color: var(--accent-color);
+  text-transform: uppercase;
   transition: opacity 0.3s ease;
 }
 
@@ -126,24 +132,26 @@ h1, h2, h3, h4, h5, h6 {
 .nav-button {
   background: none;
   border: none;
-  color: var(--text-muted);
-  font-family: 'Inter', sans-serif;
-  font-size: 15px;
-  font-weight: 500;
+  color: var(--text-main);
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
   cursor: pointer;
   padding: 8px 16px;
   transition: all 0.3s ease;
 }
 
 .nav-button:hover, .nav-button.active {
-  color: #fff;
+  color: var(--accent-color);
+  transform: scale(1.05);
 }
 
 /* Main Content Area */
 .main-content {
   flex: 1;
   display: flex;
-  padding: 0 48px;
+  padding: 100px 48px 0;
 }
 
 /* Centered Hero */
@@ -244,18 +252,20 @@ h1, h2, h3, h4, h5, h6 {
   right: 48px;
   background: none;
   border: none;
-  color: var(--text-muted);
+  color: var(--accent-color);
   display: flex;
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  font-family: 'Inter', sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  transition: color 0.3s ease;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
 }
 
 .back-button:hover {
+  transform: scale(1.05);
   color: #fff;
 }
 
@@ -321,12 +331,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .skill-tag {
-  background: rgba(59, 130, 246, 0.15);
-  color: #93c5fd;
+  background: rgba(237, 167, 45, 0.15);
+  color: var(--accent-color);
   padding: 4px 12px;
   border-radius: 99px;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 /* Projects Grid */
