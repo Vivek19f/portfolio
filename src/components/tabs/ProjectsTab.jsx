@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowRight, ExternalLink, Bomb, Hash, BrainCircuit, Bug, 
-  ChevronRight, Sparkles, Keyboard, LayoutGrid 
+  ChevronRight, Sparkles, Keyboard, LayoutGrid, Search, Filter, Layers
 } from 'lucide-react';
 import { 
   SELECTED_WORK_DATA, 
@@ -12,10 +12,32 @@ import {
 } from '../../data/constants';
 import CaseStudyModal from '../CaseStudyModal';
 import PlaygroundModal from '../PlaygroundModal';
+import GitHubTelemetryBar from '../GitHubTelemetryBar';
+import { soundEngine } from '../../utils/soundEngine';
 
 export default function ProjectsTab({ setActiveTab }) {
   const [activeCaseStudy, setActiveCaseStudy] = useState(null);
   const [activeGame, setActiveGame] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const FILTER_CHIPS = [
+    { id: 'all', label: 'All Projects' },
+    { id: 'architecture', label: 'Architecture & Systems' },
+    { id: 'security', label: 'Security & Telemetry' },
+    { id: 'data', label: 'Data & Streaming' },
+    { id: 'ai', label: 'AI Systems' },
+    { id: 'interactive', label: 'Interactive WebGL' }
+  ];
+
+  const filteredProjects = SELECTED_WORK_DATA.filter((project) => {
+    const matchesFilter = selectedFilter === 'all' || project.category === selectedFilter;
+    const matchesSearch = !searchQuery.trim() || 
+      project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      project.stack.some(tech => tech.toLowerCase().includes(searchQuery.toLowerCase()));
+    return matchesFilter && matchesSearch;
+  });
 
   const getFunIcon = (iconName) => {
     switch (iconName) {
@@ -46,90 +68,173 @@ export default function ProjectsTab({ setActiveTab }) {
         </p>
       </div>
 
-      {/* Section 1: Selected Work */}
+      {/* Feature 1: Live GitHub Telemetry Bar */}
+      <GitHubTelemetryBar />
+
+      {/* Feature 4: Domain & Stack Filter Chips */}
       <section className="projects-section-block">
-        <h2 className="section-mono-heading font-mono">&gt; Selected_Work</h2>
-        <div className="selected-work-grid">
-          {SELECTED_WORK_DATA.map((project) => (
-            <article key={project.id} className="selected-work-card group">
-              <div className="card-top-content">
-                <h3 className="work-card-title">
-                  {project.link ? (
-                    <a 
-                      href={project.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="work-title-link"
-                    >
-                      {project.name}
-                    </a>
+        <div className="projects-filter-bar">
+          <div className="filter-chips-track">
+            {FILTER_CHIPS.map((chip) => {
+              const isActive = selectedFilter === chip.id;
+              return (
+                <button
+                  key={chip.id}
+                  onClick={() => {
+                    soundEngine.playTabSwitch();
+                    setSelectedFilter(chip.id);
+                  }}
+                  className={`filter-chip-btn font-mono ${isActive ? 'active' : ''}`}
+                >
+                  <span>{chip.label}</span>
+                  {chip.id === 'all' ? (
+                    <span className="filter-count-badge">{SELECTED_WORK_DATA.length}</span>
                   ) : (
-                    <span>{project.name}</span>
+                    <span className="filter-count-badge">
+                      {SELECTED_WORK_DATA.filter(p => p.category === chip.id).length}
+                    </span>
                   )}
-                </h3>
-                <p className="work-card-description">{project.description}</p>
-              </div>
+                </button>
+              );
+            })}
+          </div>
 
-              <div className="work-card-meta">
-                <span className="work-card-role font-mono">{project.role}</span>
-              </div>
-
-              {/* Stack Badges */}
-              <ul className="work-stack-list" aria-label="Technology Stack">
-                {project.stack.map((tech, idx) => (
-                  <li key={idx} className="work-stack-badge font-mono">
-                    {tech}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Card Footer Action */}
-              <div className="work-card-footer">
-                {project.hasCaseStudy ? (
-                  <button
-                    type="button"
-                    onClick={() => setActiveCaseStudy(project)}
-                    className="case-study-action-btn"
-                  >
-                    <span>Read the case study</span>
-                    <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-                  </button>
-                ) : (
-                  <span className="font-mono text-xs text-muted-custom">
-                    {project.details || 'Internal, details on request'}
-                  </span>
-                )}
-              </div>
-            </article>
-          ))}
+          {/* Quick Search */}
+          <div className="project-search-box">
+            <Search size={14} className="text-secondary" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search stack or title..."
+              className="project-search-input font-mono"
+            />
+            {searchQuery && (
+              <button 
+                type="button" 
+                onClick={() => setSearchQuery('')}
+                className="search-clear-btn font-mono"
+              >
+                ✕
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Section 1: Selected Work Grid */}
+        <h2 className="section-mono-heading font-mono">&gt; Selected_Work</h2>
+        
+        {filteredProjects.length === 0 ? (
+          <div className="filter-empty-state font-mono">
+            <p>No projects found matching current filter & search criteria.</p>
+            <button 
+              onClick={() => { setSelectedFilter('all'); setSearchQuery(''); }}
+              className="text-accent underline text-xs mt-2"
+            >
+              Reset all filters
+            </button>
+          </div>
+        ) : (
+          <div className="selected-work-grid">
+            <AnimatePresence>
+              {filteredProjects.map((project) => (
+                <motion.article 
+                  key={project.id} 
+                  layout
+                  initial={{ opacity: 0, scale: 0.98 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.98 }}
+                  transition={{ duration: 0.2 }}
+                  className="selected-work-card group"
+                >
+                  <div className="card-top-content">
+                    <div className="work-card-category-strip font-mono">
+                      <span className="work-category-pill">{project.categoryLabel}</span>
+                    </div>
+
+                    <h3 className="work-card-title">
+                      {project.link ? (
+                        <a 
+                          href={project.link} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          onClick={() => soundEngine.playClick()}
+                          className="work-title-link"
+                        >
+                          {project.name}
+                        </a>
+                      ) : (
+                        <span>{project.name}</span>
+                      )}
+                    </h3>
+                    <p className="work-card-description">{project.description}</p>
+                  </div>
+
+                  <div className="work-card-meta">
+                    <span className="work-card-role font-mono">{project.role}</span>
+                  </div>
+
+                  {/* Stack Badges */}
+                  <ul className="work-stack-list" aria-label="Technology Stack">
+                    {project.stack.map((tech, idx) => (
+                      <li key={idx} className="work-stack-badge font-mono">
+                        {tech}
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Card Footer Action */}
+                  <div className="work-card-footer">
+                    {project.hasCaseStudy ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          soundEngine.playClick();
+                          setActiveCaseStudy(project);
+                        }}
+                        className="case-study-action-btn"
+                      >
+                        <span>Read the case study</span>
+                        <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                      </button>
+                    ) : (
+                      <span className="font-mono text-xs text-muted-custom">
+                        {project.details || 'Internal, details on request'}
+                      </span>
+                    )}
+                  </div>
+                </motion.article>
+              ))}
+            </AnimatePresence>
+          </div>
+        )}
       </section>
 
-      {/* Section 2: Built For Fun */}
+      {/* Section 2: Built for Fun / Puzzles */}
       <section className="projects-section-block">
         <h2 className="section-mono-heading font-mono">&gt; Built_For_Fun</h2>
         <div className="built-for-fun-grid">
           {BUILT_FOR_FUN_DATA.map((item) => {
             const IconComp = getFunIcon(item.icon);
             return (
-              <div
-                key={item.id}
-                onClick={() => setActiveGame(item.id)}
-                className="fun-project-card group cursor-pointer"
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => { if (e.key === 'Enter') setActiveGame(item.id); }}
+              <div 
+                key={item.id} 
+                className="fun-game-card group cursor-pointer"
+                onClick={() => {
+                  soundEngine.playClick();
+                  setActiveGame(item.id);
+                }}
               >
-                <div className="fun-icon-wrapper">
-                  <IconComp size={24} className="fun-icon text-muted-custom group-hover:text-accent transition-colors" />
+                <div className="fun-card-icon-wrapper">
+                  <IconComp className="text-accent group-hover:scale-110 transition-transform" size={24} />
                 </div>
-                <div className="flex items-center justify-between">
-                  <h3 className="fun-card-title group-hover:text-accent transition-colors">
-                    {item.name}
-                  </h3>
-                  <span className="play-badge font-mono text-xs">Play ↵</span>
+                <div className="fun-card-content">
+                  <div className="flex items-center justify-between">
+                    <h3 className="fun-card-title">{item.name}</h3>
+                    <ArrowRight size={16} className="text-accent opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                  </div>
+                  <p className="fun-card-description">{item.description}</p>
                 </div>
-                <p className="fun-card-desc">{item.description}</p>
               </div>
             );
           })}
@@ -138,64 +243,69 @@ export default function ProjectsTab({ setActiveTab }) {
 
       {/* Section 3: Archive */}
       <section className="projects-section-block">
-        <h2 className="section-mono-heading font-mono">&gt; Archive</h2>
-        <ul className="archive-list">
-          {ARCHIVE_DATA.map((item, idx) => (
-            <li key={idx} className="archive-item-card">
-              <div className="archive-header-row">
-                <span className="archive-year font-mono">{item.year}</span>
-                <a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="archive-title-link"
-                >
-                  {item.name}
-                </a>
-                <span className="archive-description">{item.description}</span>
-              </div>
-              <ul className="archive-stack-list font-mono" aria-label="Archive stack">
-                {item.stack.map((s, sIdx) => (
-                  <li key={sIdx} className="archive-stack-badge">
-                    {s}
-                  </li>
-                ))}
-              </ul>
-            </li>
-          ))}
-        </ul>
+        <h2 className="section-mono-heading font-mono">&gt; Project_Archive</h2>
+        <div className="archive-list-container">
+          <table className="archive-table font-mono" aria-label="Project Archive">
+            <thead>
+              <tr className="archive-header-row">
+                <th className="archive-th text-left">YEAR</th>
+                <th className="archive-th text-left">PROJECT</th>
+                <th className="archive-th text-left hidden md:table-cell">BUILT WITH</th>
+                <th className="archive-th text-right">LINK</th>
+              </tr>
+            </thead>
+            <tbody>
+              {ARCHIVE_DATA.map((item, idx) => (
+                <tr key={idx} className="archive-row group">
+                  <td className="archive-td archive-year">{item.year}</td>
+                  <td className="archive-td archive-title">{item.name || item.title}</td>
+                  <td className="archive-td archive-tech hidden md:table-cell">
+                    {(item.stack || item.builtWith || []).join(' · ')}
+                  </td>
+                  <td className="archive-td text-right">
+                    {(item.url || item.link) ? (
+                      <a 
+                        href={item.url || item.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        onClick={() => soundEngine.playClick()}
+                        className="archive-link inline-flex items-center gap-1 group-hover:text-accent"
+                      >
+                        <ExternalLink size={14} />
+                      </a>
+                    ) : (
+                      <span className="text-muted-custom">—</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       {/* Section 4: Previous Versions */}
-      <section className="projects-section-block previous-versions-block">
+      <section className="projects-section-block">
         <h2 className="section-mono-heading font-mono">&gt; Previous_Versions</h2>
-        <details className="previous-versions-accordion">
-          <summary className="accordion-summary font-mono">
-            Show {PREVIOUS_VERSIONS_DATA.length} previous versions
-          </summary>
-          <ol className="versions-list">
-            {PREVIOUS_VERSIONS_DATA.map((v, idx) => (
-              <li key={idx} className="version-item">
-                <span className="version-tag font-mono">{v.version}</span>
-                <span className="version-years font-mono">{v.years}</span>
-                <span className="version-tech font-sans">{v.tech}</span>
-                <span className="version-action">
-                  <a
-                    href={v.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="version-link font-mono"
-                  >
-                    Visit <ChevronRight size={14} />
-                  </a>
-                </span>
-              </li>
-            ))}
-          </ol>
-        </details>
+        <div className="versions-pill-list">
+          {PREVIOUS_VERSIONS_DATA.map((ver, idx) => (
+            <a
+              key={idx}
+              href={ver.url || ver.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => soundEngine.playClick()}
+              className="version-capsule-item group"
+            >
+              <span className="version-name font-mono">{ver.version}</span>
+              <span className="version-year font-mono">{ver.years || ver.year}</span>
+              <ExternalLink size={12} className="version-icon group-hover:text-accent" />
+            </a>
+          ))}
+        </div>
       </section>
 
-      {/* Modals */}
+      {/* Case Study Modal */}
       {activeCaseStudy && (
         <CaseStudyModal
           project={activeCaseStudy}
@@ -203,6 +313,7 @@ export default function ProjectsTab({ setActiveTab }) {
         />
       )}
 
+      {/* Playground Game Modal */}
       {activeGame && (
         <PlaygroundModal
           gameId={activeGame}

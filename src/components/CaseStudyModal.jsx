@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, CheckCircle2, ArrowRight, ShieldCheck, Zap } from 'lucide-react';
+import { X, ExternalLink, CheckCircle2, ArrowRight, ShieldCheck, Zap, GitBranch } from 'lucide-react';
+import { soundEngine } from '../utils/soundEngine';
 
 export default function CaseStudyModal({ project, onClose }) {
   useEffect(() => {
+    soundEngine.playModalOpen();
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose();
     };
@@ -35,7 +37,14 @@ export default function CaseStudyModal({ project, onClose }) {
               <h2 className="modal-title">{caseStudy.title}</h2>
               <p className="modal-tagline">{caseStudy.tagline}</p>
             </div>
-            <button className="modal-close-btn" onClick={onClose} aria-label="Close modal">
+            <button 
+              className="modal-close-btn" 
+              onClick={() => {
+                soundEngine.playClick();
+                onClose();
+              }} 
+              aria-label="Close modal"
+            >
               <X size={20} />
             </button>
           </div>
@@ -47,6 +56,41 @@ export default function CaseStudyModal({ project, onClose }) {
               <h3 className="section-subtitle font-mono">&gt; The_Context</h3>
               <p className="text-secondary leading-relaxed">{caseStudy.overview}</p>
             </div>
+
+            {/* System Architecture Pipeline Diagram */}
+            {caseStudy.architecture && caseStudy.architecture.length > 0 && (
+              <div className="modal-section">
+                <div className="architecture-header-flex">
+                  <h3 className="section-subtitle font-mono">&gt; System_Architecture_Pipeline</h3>
+                  <span className="architecture-live-tag font-mono">
+                    <GitBranch size={12} className="text-accent" />
+                    Distributed Flow
+                  </span>
+                </div>
+
+                <div className="architecture-pipeline-container">
+                  <div className="architecture-track">
+                    {caseStudy.architecture.map((node, idx) => (
+                      <React.Fragment key={idx}>
+                        <div className="architecture-node group">
+                          <div className="architecture-node-header font-mono">
+                            <span className="arch-node-stage">{node.stage}</span>
+                            <span className="arch-node-tech">{node.tech}</span>
+                          </div>
+                          <p className="arch-node-desc font-mono">{node.desc}</p>
+                        </div>
+                        {idx < caseStudy.architecture.length - 1 && (
+                          <div className="architecture-flow-arrow" aria-hidden="true">
+                            <div className="arch-flow-line"></div>
+                            <ArrowRight size={14} className="arch-flow-icon text-accent" />
+                          </div>
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Key Challenges */}
             {caseStudy.challenges && (
@@ -109,6 +153,7 @@ export default function CaseStudyModal({ project, onClose }) {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => soundEngine.playClick()}
                 className="action-btn primary-glow-btn"
               >
                 <span>View Repository</span>
@@ -119,9 +164,6 @@ export default function CaseStudyModal({ project, onClose }) {
                 Enterprise confidential • Architecture patterns shareable on request
               </span>
             )}
-            <button className="action-btn ghost-btn" onClick={onClose}>
-              Close
-            </button>
           </div>
         </motion.div>
       </div>

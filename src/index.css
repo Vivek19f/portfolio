@@ -2310,3 +2310,557 @@ button {
   color: var(--text-main);
 }
 
+/* ---------------- FEATURE 1: GITHUB TELEMETRY BAR ---------------- */
+.github-telemetry-container {
+  margin-bottom: 40px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(13, 20, 36, 0.45);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  padding: 16px 20px 20px;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+}
+
+.telemetry-header-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.telemetry-live-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  color: var(--text-main);
+}
+
+.telemetry-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: pulse-dot 1.8s infinite;
+}
+
+.telemetry-source-tag {
+  color: var(--accent);
+  font-size: 0.68rem;
+}
+
+.telemetry-runtime-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.telemetry-meta-sep {
+  opacity: 0.4;
+}
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .telemetry-grid {
+    grid-template-columns: 1.4fr 1fr 1fr;
+  }
+}
+
+.telemetry-metric-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(22, 22, 28, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.2s ease;
+}
+
+.telemetry-metric-card:hover {
+  border-color: rgba(0, 240, 255, 0.25);
+  background: rgba(22, 22, 28, 0.6);
+}
+
+.telemetry-activity-card {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.telemetry-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.telemetry-card-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.telemetry-time-badge {
+  font-size: 0.68rem;
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 240, 255, 0.08);
+}
+
+.telemetry-stars-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: #facc15;
+}
+
+.telemetry-live-badge {
+  font-size: 0.68rem;
+  color: #10b981;
+}
+
+.telemetry-commit-body {
+  margin: 6px 0 10px;
+}
+
+.telemetry-repo-name {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-main);
+  margin-bottom: 2px;
+}
+
+.telemetry-commit-text {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.telemetry-card-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  color: var(--accent);
+  margin-top: auto;
+}
+
+.telemetry-stat-value {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin: 6px 0 4px;
+}
+
+.telemetry-big-number {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1;
+}
+
+.telemetry-unit {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.telemetry-card-sub {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+}
+
+.telemetry-langs-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.telemetry-lang-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.lang-color-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.telemetry-bar-skeleton {
+  height: 140px;
+  border-radius: 18px;
+  background: rgba(22, 22, 28, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  margin-bottom: 40px;
+  animation: pulse-dot 2s infinite;
+}
+
+/* ---------------- FEATURE 2: SYSTEM ARCHITECTURE DIAGRAMS ---------------- */
+.architecture-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.architecture-live-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  color: var(--accent);
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  padding: 3px 10px;
+  border-radius: 9999px;
+}
+
+.architecture-pipeline-container {
+  overflow-x: auto;
+  padding-bottom: 8px;
+}
+
+.architecture-track {
+  display: flex;
+  align-items: stretch;
+  gap: 10px;
+  min-width: 600px;
+}
+
+.architecture-node {
+  flex: 1;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: rgba(14, 20, 36, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.2s ease;
+}
+
+.architecture-node:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px -4px var(--accent-glow);
+}
+
+.architecture-node-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.arch-node-stage {
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.arch-node-tech {
+  font-size: 0.68rem;
+  color: var(--accent);
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(0, 240, 255, 0.1);
+}
+
+.arch-node-desc {
+  font-size: 0.74rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.architecture-flow-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+}
+
+.arch-flow-icon {
+  filter: drop-shadow(0 0 6px var(--accent));
+}
+
+/* ---------------- FEATURE 4: PROJECT FILTER CHIPS & SEARCH ---------------- */
+.projects-filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+@media (min-width: 900px) {
+  .projects-filter-bar {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.filter-chips-track {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(22, 22, 28, 0.5);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-chip-btn:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-main);
+}
+
+.filter-chip-btn.active {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 16px -4px var(--accent-glow);
+}
+
+.filter-count-badge {
+  font-size: 0.7rem;
+  padding: 1px 6px;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+}
+
+.project-search-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 14px;
+  border-radius: 9999px;
+  background: rgba(22, 22, 28, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  min-width: 240px;
+}
+
+.project-search-box:focus-within {
+  border-color: var(--accent);
+}
+
+.project-search-input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  width: 100%;
+}
+
+.project-search-input::placeholder {
+  color: var(--text-muted);
+}
+
+.search-clear-btn {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+}
+
+.work-card-category-strip {
+  margin-bottom: 8px;
+}
+
+.work-category-pill {
+  font-size: 0.68rem;
+  color: var(--accent);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.filter-empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  border: 1px dashed rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  margin-top: 16px;
+}
+
+/* ---------------- FEATURE 5: AUDIO SYNTHESIZER TOGGLE ---------------- */
+.sound-toggle-btn {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.sound-toggle-btn.sound-active {
+  border-color: rgba(0, 240, 255, 0.4);
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+}
+
+/* ---------------- FEATURE 3: COMMAND PALETTE DUAL MODE & CLI ---------------- */
+.console-top-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(14, 14, 18, 0.6);
+}
+
+.console-mode-toggle {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.mode-pill-btn:hover {
+  color: var(--text-main);
+}
+
+.mode-pill-btn.active {
+  background: var(--accent);
+  color: #070a12;
+  font-weight: 600;
+}
+
+.cli-container {
+  display: flex;
+  flex-direction: column;
+  height: 380px;
+  background: rgba(8, 10, 16, 0.95);
+}
+
+.cli-output {
+  flex: 1;
+  padding: 16px 20px;
+  overflow-y: auto;
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.cli-line {
+  margin-bottom: 6px;
+}
+
+.cli-system {
+  color: var(--text-muted);
+}
+
+.cli-command {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.cli-output {
+  color: var(--text-secondary);
+}
+
+.cli-success {
+  color: #10b981;
+}
+
+.cli-error {
+  color: #f87171;
+}
+
+.cli-input-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(12, 16, 26, 0.95);
+}
+
+.cli-prompt {
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.cli-text-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 0.85rem;
+}
+
+.cli-submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 8px;
+  border-radius: 4px;
+  background: rgba(0, 240, 255, 0.15);
+  color: var(--accent);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  cursor: pointer;
+}
+
+.cli-submit-btn:hover {
+  background: var(--accent);
+  color: #050811;
+}
+
+

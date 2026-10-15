@@ -16,6 +16,9 @@ export default function StarfieldCanvas() {
     let targetMouseX = width / 2;
     let targetMouseY = height / 2;
 
+    let warpFactor = 1;
+    let isWarping = false;
+
     const handleResize = () => {
       width = canvas.width = window.innerWidth;
       height = canvas.height = window.innerHeight;
@@ -26,11 +29,27 @@ export default function StarfieldCanvas() {
       targetMouseY = e.clientY;
     };
 
+    const handleWarp = () => {
+      isWarping = true;
+      warpFactor = 16;
+      setTimeout(() => {
+        const decay = setInterval(() => {
+          warpFactor *= 0.85;
+          if (warpFactor <= 1.05) {
+            warpFactor = 1;
+            isWarping = false;
+            clearInterval(decay);
+          }
+        }, 50);
+      }, 1600);
+    };
+
     window.addEventListener('resize', handleResize);
     window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('starfield-warp', handleWarp);
 
     // Generate stars
-    const numStars = 180;
+    const numStars = 190;
     const stars = [];
     for (let i = 0; i < numStars; i++) {
       stars.push({
@@ -40,14 +59,14 @@ export default function StarfieldCanvas() {
         baseAlpha: Math.random() * 0.7 + 0.2,
         twinkleSpeed: Math.random() * 0.02 + 0.005,
         twinkleOffset: Math.random() * Math.PI * 2,
-        speedX: (Math.random() - 0.5) * 0.15,
-        speedY: (Math.random() - 0.5) * 0.15,
+        speedX: (Math.random() - 0.5) * 0.18,
+        speedY: (Math.random() - 0.5) * 0.18,
         depth: Math.random() * 0.8 + 0.2,
-        color: Math.random() > 0.82 ? '#00f0ff' : Math.random() > 0.65 ? '#38bdf8' : '#ffffff', // Electric Cyan & Sky Blue
+        color: Math.random() > 0.82 ? '#00f0ff' : Math.random() > 0.65 ? '#38bdf8' : '#ffffff',
       });
     }
 
-    // Occasional subtle shooting stars
+    // Shooting stars
     const shootingStars = [];
     let lastShootingStarTime = Date.now();
 
@@ -67,7 +86,6 @@ export default function StarfieldCanvas() {
     let tick = 0;
     const render = () => {
       tick++;
-      // Smooth mouse follow
       mouseX += (targetMouseX - mouseX) * 0.05;
       mouseY += (targetMouseY - mouseY) * 0.05;
 
@@ -78,8 +96,8 @@ export default function StarfieldCanvas() {
 
       // Render stars
       stars.forEach((star) => {
-        star.x += star.speedX;
-        star.y += star.speedY;
+        star.x += star.speedX * warpFactor;
+        star.y += star.speedY * warpFactor;
 
         // Wrap around boundaries
         if (star.x < 0) star.x = width;
@@ -94,14 +112,25 @@ export default function StarfieldCanvas() {
         const drawX = star.x - parallaxX * star.depth;
         const drawY = star.y - parallaxY * star.depth;
 
-        ctx.beginPath();
-        ctx.arc(drawX, drawY, star.radius, 0, Math.PI * 2);
-        ctx.fillStyle = star.color;
-        ctx.globalAlpha = finalAlpha;
-        ctx.shadowBlur = star.color === '#00f0ff' ? 8 : star.color === '#38bdf8' ? 6 : 2;
-        ctx.shadowColor = star.color;
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        if (isWarping && warpFactor > 3) {
+          // Hyperspace warp lines
+          ctx.beginPath();
+          ctx.moveTo(drawX, drawY);
+          ctx.lineTo(drawX - star.speedX * warpFactor * 4, drawY - star.speedY * warpFactor * 4);
+          ctx.strokeStyle = star.color;
+          ctx.lineWidth = star.radius * 1.5;
+          ctx.globalAlpha = 0.8;
+          ctx.stroke();
+        } else {
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, star.radius, 0, Math.PI * 2);
+          ctx.fillStyle = star.color;
+          ctx.globalAlpha = finalAlpha;
+          ctx.shadowBlur = star.color === '#00f0ff' ? 8 : star.color === '#38bdf8' ? 6 : 2;
+          ctx.shadowColor = star.color;
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
       });
 
       // Handle shooting stars
@@ -121,8 +150,8 @@ export default function StarfieldCanvas() {
         const tailY = s.y - Math.sin(s.angle) * s.length;
 
         const grad = ctx.createLinearGradient(s.x, s.y, tailX, tailY);
-        grad.addColorStop(0, 'rgba(0, 240, 255, ' + s.alpha + ')');
-        grad.addColorStop(1, 'rgba(56, 189, 248, 0)');
+        grad.addColorStop(0, `rgba(0, 240, 255, ${s.alpha})`);
+        grad.addColorStop(1, 'rgba(0, 240, 255, 0)');
 
         ctx.beginPath();
         ctx.moveTo(s.x, s.y);
@@ -136,7 +165,6 @@ export default function StarfieldCanvas() {
         }
       }
 
-      ctx.globalAlpha = 1;
       animationFrameId = requestAnimationFrame(render);
     };
 
@@ -145,6 +173,7 @@ export default function StarfieldCanvas() {
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('starfield-warp', handleWarp);
       cancelAnimationFrame(animationFrameId);
     };
   }, []);

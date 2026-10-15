@@ -1,7 +1,19 @@
-import React from 'react';
-import { Terminal, ArrowDown, Briefcase, Layers, Gamepad2, Award, BookOpen } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Terminal, ArrowDown, Briefcase, Layers, Gamepad2, Award, BookOpen, Volume2, VolumeX } from 'lucide-react';
+import { soundEngine } from '../utils/soundEngine';
 
 export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
+  const [isSoundOn, setIsSoundOn] = useState(false);
+
+  useEffect(() => {
+    setIsSoundOn(soundEngine.isEnabled());
+  }, []);
+
+  const handleToggleSound = () => {
+    const nextState = soundEngine.toggle();
+    setIsSoundOn(nextState);
+  };
+
   const navItems = [
     { id: 'experience', labelTop: 'I Work', labelBottom: 'Experience', icon: Briefcase },
     { id: 'projects', labelTop: 'I Build', labelBottom: 'Projects', icon: Layers },
@@ -16,7 +28,10 @@ export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
         {/* Logo */}
         <div 
           className="brand-logo cursor-pointer"
-          onClick={() => setActiveTab('home')}
+          onClick={() => {
+            soundEngine.playClick();
+            setActiveTab('home');
+          }}
         >
           <span className="brand-accent">Vivek</span> Jhooria
         </div>
@@ -30,7 +45,10 @@ export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
             return (
               <button
                 key={item.id}
-                onClick={() => setActiveTab(item.id)}
+                onClick={() => {
+                  soundEngine.playTabSwitch();
+                  setActiveTab(item.id);
+                }}
                 className={`nav-capsule-link group ${isActive ? 'active' : ''}`}
                 aria-current={isActive ? 'page' : undefined}
               >
@@ -59,10 +77,28 @@ export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
 
         {/* Right Actions */}
         <div className="header-actions">
+          {/* Audio Synthesizer Toggle */}
+          <button
+            type="button"
+            onClick={handleToggleSound}
+            aria-label={isSoundOn ? "Mute sound effects" : "Enable sound effects"}
+            title={isSoundOn ? "Sound Effects: ON (Click to mute)" : "Sound Effects: OFF (Click to unmute)"}
+            className={`header-action-btn sound-toggle-btn ${isSoundOn ? 'sound-active' : ''}`}
+          >
+            {isSoundOn ? (
+              <Volume2 size={15} className="text-accent" />
+            ) : (
+              <VolumeX size={15} className="text-secondary opacity-60" />
+            )}
+          </button>
+
           {/* Command Palette Button */}
           <button
             type="button"
-            onClick={onOpenConsole}
+            onClick={() => {
+              soundEngine.playModalOpen();
+              onOpenConsole();
+            }}
             aria-label="Open command palette"
             className="header-action-btn terminal-trigger-btn"
           >
@@ -75,6 +111,7 @@ export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
             href="https://github.com/Vivek19f"
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => soundEngine.playClick()}
             className="resume-pill-btn group"
           >
             <ArrowDown size={15} className="resume-icon group-hover:text-accent" />

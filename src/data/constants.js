@@ -28,6 +28,8 @@ export const SELECTED_WORK_DATA = [
     id: "portfolio-v3",
     name: "vivek.me, this portfolio",
     subtitle: "v3 portfolio",
+    category: "interactive",
+    categoryLabel: "Interactive WebGL",
     description: "A fast, playful portfolio with interactive arcade puzzle games, a hand-crafted WebGL starfield, ⌘K command console, and smooth micro-animations, built and shipped solo.",
     role: "Solo: design, build, ship",
     stack: ["React 19", "TypeScript", "Three.js", "Framer Motion", "Tailwind CSS"],
@@ -37,6 +39,12 @@ export const SELECTED_WORK_DATA = [
       title: "Designing & Engineering Portfolio v3",
       tagline: "High-performance playful web engineering with zero bloat.",
       overview: "Wanted a personal website that felt alive, playful, and technically sophisticated—not just another static developer resume. Built with interactive mini-games, dynamic WebGL starfield, keyboard command console, and fluid transitions.",
+      architecture: [
+        { stage: "01. WebGL Starfield", tech: "HTML5 Canvas", desc: "Double-buffered particle physics ticking at 60 FPS without DOM thrashing." },
+        { stage: "02. React 19 Shell", tech: "Vite + React 19", desc: "Single-view viewport orchestration with zero-overhead layout transitions." },
+        { stage: "03. Audio Synthesizer", tech: "Web Audio API", desc: "Zero-asset mechanical sound feedback generated in real time." },
+        { stage: "04. Live GitHub Bus", tech: "GitHub REST API", desc: "Decoupled 10-minute TTL cached telemetry ingestion with fallback resilience." }
+      ],
       challenges: [
         "Rendering an interactive starfield with parallax without affecting 60fps page scroll performance.",
         "Creating an intuitive rolling text navigation dock and ⌘K console with full keyboard accessibility.",
@@ -54,6 +62,8 @@ export const SELECTED_WORK_DATA = [
     id: "threat-matrix",
     name: "Threat Matrix & MITRE ATT&CK Analytics",
     subtitle: "Cybersecurity Platform",
+    category: "security",
+    categoryLabel: "Security & Telemetry",
     description: "Interactive threat intelligence analytics engine mapping adversary tactics, techniques, and procedures (TTPs) across multi-dimensional matrices with real-time sub-16ms graph filtering.",
     role: "Lead UI Architect",
     stack: ["React", "TypeScript", "Web Workers", "D3.js", "State Machines"],
@@ -63,6 +73,12 @@ export const SELECTED_WORK_DATA = [
       title: "MITRE ATT&CK Heatmap & Analytics Matrix",
       tagline: "Interactive multidimensional visualization for enterprise cyber defense.",
       overview: "Security analysts needed to cross-reference thousands of Indicators of Compromise (IOCs) against adversary techniques. The legacy UI froze under heavy matrix calculations.",
+      architecture: [
+        { stage: "01. IOC Ingestion", tech: "WebSocket Stream", desc: "Continuous live telemetry stream of threat actor signatures and adversary tactics." },
+        { stage: "02. Worker Thread", tech: "Web Workers", desc: "Off-main-thread graph filtering, clustering, and confidence scoring in < 14ms." },
+        { stage: "03. State Machine", tech: "XState / Redux", desc: "Strict transition state machines eliminating race conditions across filters." },
+        { stage: "04. Hybrid Matrix Canvas", tech: "D3 + Virtual DOM", desc: "Virtualized viewport rendering 10,000+ nodes at a steady 60 FPS." }
+      ],
       challenges: [
         "Traversing and filtering 500+ tactic nodes with real-time aggregated threat confidence scores.",
         "Preventing main thread freezing during multi-facet filter state transitions across 10,000+ IOCs.",
@@ -80,6 +96,8 @@ export const SELECTED_WORK_DATA = [
     id: "mapping-engine",
     name: "Schema-Driven Mapping Engine",
     subtitle: "Telemetry Ingestion",
+    category: "data",
+    categoryLabel: "Data & Streaming",
     description: "Automated 100% of manual attribute mapping for 10k+ row CSV telemetry with an extensible, schema-driven ingestion engine and heuristic validation pipeline.",
     role: "Architect & Senior Developer",
     stack: ["React", "TypeScript", "Zod", "Web Streams", "Architecture"],
@@ -89,6 +107,12 @@ export const SELECTED_WORK_DATA = [
       title: "Schema-Driven Telemetry Ingestion Engine",
       tagline: "Eliminating manual data mapping with AST-driven inference.",
       overview: "Enterprise clients upload heterogeneous telemetry schemas with differing field naming standards. Manual field mapping took engineers 3+ hours per client.",
+      architecture: [
+        { stage: "01. Chunked Stream", tech: "Web Streams API", desc: "Non-blocking client-side file chunking reading 10k+ rows without memory spikes." },
+        { stage: "02. AST Inferencer", tech: "Zod + Heuristics", desc: "Levenshtein distance & regex heuristic matching with 98.7% automatic accuracy." },
+        { stage: "03. Worker Validation", tech: "Worker Thread", desc: "High-throughput schema validation executing 50k rows/s in background." },
+        { stage: "04. Virtual Grid", tech: "Virtual Scroll", desc: "Immediate preview of mapped fields with highlighted confidence anomalies." }
+      ],
       challenges: [
         "Inconsistent data formats and multi-level nested payloads across varied telemetry sources.",
         "Validating tens of thousands of rows client-side without crashing browser memory.",
@@ -106,6 +130,8 @@ export const SELECTED_WORK_DATA = [
     id: "ai-assistant",
     name: "Real-Time AI Assistant UI",
     subtitle: "Generative AI Platform",
+    category: "ai",
+    categoryLabel: "AI Systems",
     description: "Delivered real-time streamed AI responses over Server-Sent Events (SSE), rendered through custom sandboxed execution renderers with Markdown AST syntax highlighting.",
     role: "Senior Frontend Engineer",
     stack: ["React", "SSE", "State Machine", "Sandboxed Execution"],
@@ -115,6 +141,12 @@ export const SELECTED_WORK_DATA = [
       title: "Real-Time AI Assistant & Code Execution Sandbox",
       tagline: "Streaming generative AI responses with zero latency and secure execution.",
       overview: "Built a chat and code workspace assistant capable of streaming token responses while safely executing and previewing HTML, JavaScript, and CSS code snippets in real time.",
+      architecture: [
+        { stage: "01. SSE Stream", tech: "Server-Sent Events", desc: "Token streaming channel with custom reconnection and backpressure buffers." },
+        { stage: "02. AST Token Parser", tech: "Unified / Remark", desc: "Progressive Markdown AST parser preventing re-tokenizing the whole history." },
+        { stage: "03. Sandboxed Iframe", tech: "HTML5 Sandbox", desc: "Isolated postMessage protocol executing untrusted JS/HTML securely." },
+        { stage: "04. Sticky Scroller", tech: "ResizeObserver", desc: "Anchor-aware auto-scrolling with zero scroll lock or user jank." }
+      ],
       challenges: [
         "Handling bursty SSE token packets while preventing continuous React re-renders.",
         "Executing untrusted generated code safely without XSS vulnerability.",
@@ -132,6 +164,8 @@ export const SELECTED_WORK_DATA = [
     id: "mfe-migration",
     name: "Enterprise MFE Migration",
     subtitle: "Architecture Modernization",
+    category: "architecture",
+    categoryLabel: "Architecture & Systems",
     description: "Cut deployment times and eliminated technical debt by unifying 15+ legacy distributed codebases into one resilient Micro-Frontend architecture with shared design tokens.",
     role: "Frontend Architect",
     stack: ["Webpack", "Micro-Frontends", "Design System", "TypeScript"],
@@ -141,6 +175,12 @@ export const SELECTED_WORK_DATA = [
       title: "Unifying 15+ Enterprise Legacy Codebases into Micro-Frontends",
       tagline: "Scalable frontend federation for multi-team velocity.",
       overview: "Four disparate engineering squads were blocked by monolithic release cycles. Migrated to Webpack 5 Module Federation with centralized core state and shared design tokens.",
+      architecture: [
+        { stage: "01. Host Shell", tech: "Webpack 5 Federation", desc: "Thin container shell negotiating shared dependencies (React, UI tokens)." },
+        { stage: "02. Event Bus Bridge", tech: "Custom Event Protocol", desc: "Framework-agnostic inter-app communication without tight coupling." },
+        { stage: "03. Design System", tech: "Shared Token Package", desc: "Centralized CSS variables and typography tokens across all squads." },
+        { stage: "04. Independent CI/CD", tech: "GitHub Actions", desc: "Decoupled pipelines allowing squads to deploy independently without coordination." }
+      ],
       challenges: [
         "Dependency drift and conflicting React versions across micro-apps.",
         "Cohesive authentication and router synchronization without page reloads.",
@@ -158,6 +198,8 @@ export const SELECTED_WORK_DATA = [
     id: "timezone-service",
     name: "Timezone & Localization Engine",
     subtitle: "Temporal Infrastructure",
+    category: "architecture",
+    categoryLabel: "Architecture & Systems",
     description: "Mission-critical temporal engine ensuring consistent ISO-8601 formatting, user locale preferences, and daylight-saving normalization across global distributed services.",
     role: "Senior Software Engineer",
     stack: ["TypeScript", "Intl API", "Date-fns", "Micro-Services"],
