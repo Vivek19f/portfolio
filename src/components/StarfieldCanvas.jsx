@@ -126,10 +126,16 @@ export default function StarfieldCanvas() {
           ctx.arc(drawX, drawY, star.radius, 0, Math.PI * 2);
           ctx.fillStyle = star.color;
           ctx.globalAlpha = finalAlpha;
-          ctx.shadowBlur = star.color === '#00f0ff' ? 8 : star.color === '#38bdf8' ? 6 : 2;
-          ctx.shadowColor = star.color;
           ctx.fill();
-          ctx.shadowBlur = 0;
+
+          // Smooth glowing halo for accented stars without expensive CPU raster shadowBlur
+          if (star.color !== '#ffffff' && star.radius > 0.75) {
+            ctx.beginPath();
+            ctx.arc(drawX, drawY, star.radius * 2.2, 0, Math.PI * 2);
+            ctx.fillStyle = star.color;
+            ctx.globalAlpha = finalAlpha * 0.22;
+            ctx.fill();
+          }
         }
       });
 

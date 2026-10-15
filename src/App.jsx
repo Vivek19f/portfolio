@@ -45,6 +45,18 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Persistent tab shell: once a tab is visited, it stays loaded in the DOM and is never re-loaded
+  const [visitedTabs, setVisitedTabs] = useState(() => new Set(['home', activeTab]));
+
+  useEffect(() => {
+    setVisitedTabs((prev) => {
+      if (prev.has(activeTab)) return prev;
+      const next = new Set(prev);
+      next.add(activeTab);
+      return next;
+    });
+  }, [activeTab]);
+
   // Instant scroll-to-top on tab switch to avoid scroll trapping/jumping
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
@@ -66,18 +78,55 @@ function App() {
           onOpenConsole={() => setIsConsoleOpen(true)}
         />
 
-        {/* Dynamic Page Views with Instant Mount & Snappy Motion */}
+        {/* Persistent Page Views: Loaded Once, Cached in DOM, Zero Reload Lag */}
         <div className={`portfolio-main-viewport ${isSingleView ? 'single-view-viewport' : ''}`}>
-          {activeTab === 'home' && <HomeTab key="home" setActiveTab={setActiveTab} />}
-          {activeTab === 'projects' && <ProjectsTab key="projects" setActiveTab={setActiveTab} />}
-          {activeTab === 'experience' && <ExperienceTab key="experience" setActiveTab={setActiveTab} />}
-          {activeTab === 'arcade' && <ArcadeTab key="arcade" />}
-          {activeTab === 'achievements' && <AchievementsTab key="achievements" setActiveTab={setActiveTab} />}
-          {activeTab === 'blogs' && <BlogsTab key="blogs" setActiveTab={setActiveTab} />}
+          <div 
+            id="panel-home" 
+            style={{ display: activeTab === 'home' ? 'contents' : 'none' }}
+          >
+            <HomeTab setActiveTab={setActiveTab} />
+          </div>
+
+          <div 
+            id="panel-projects" 
+            style={{ display: activeTab === 'projects' ? 'block' : 'none' }}
+          >
+            {visitedTabs.has('projects') && <ProjectsTab setActiveTab={setActiveTab} />}
+          </div>
+
+          <div 
+            id="panel-experience" 
+            style={{ display: activeTab === 'experience' ? 'block' : 'none' }}
+          >
+            {visitedTabs.has('experience') && <ExperienceTab setActiveTab={setActiveTab} />}
+          </div>
+
+          <div 
+            id="panel-arcade" 
+            style={{ display: activeTab === 'arcade' ? 'block' : 'none' }}
+          >
+            {visitedTabs.has('arcade') && <ArcadeTab />}
+          </div>
+
+          <div 
+            id="panel-achievements" 
+            style={{ display: activeTab === 'achievements' ? 'block' : 'none' }}
+          >
+            {visitedTabs.has('achievements') && <AchievementsTab setActiveTab={setActiveTab} />}
+          </div>
+
+          <div 
+            id="panel-blogs" 
+            style={{ display: activeTab === 'blogs' ? 'block' : 'none' }}
+          >
+            {visitedTabs.has('blogs') && <BlogsTab setActiveTab={setActiveTab} />}
+          </div>
         </div>
 
         {/* Global Contact Footer on scrollable tabs */}
-        {!isSingleView && <Footer />}
+        <div style={{ display: isSingleView ? 'none' : 'block' }}>
+          <Footer />
+        </div>
 
         {/* Floating Mobile Dock Navigation */}
         <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
