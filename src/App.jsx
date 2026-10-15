@@ -1,51 +1,85 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './index.css';
 
 import Header from './components/Header';
 import Footer from './components/Footer';
-import ThreeBackground from './components/ThreeBackground';
+import StarfieldCanvas from './components/StarfieldCanvas';
+import CommandPalette from './components/CommandPalette';
+import MobileNav from './components/MobileNav';
+import PlaygroundModal from './components/PlaygroundModal';
+
 import HomeTab from './components/tabs/HomeTab';
 import ExperienceTab from './components/tabs/ExperienceTab';
 import ProjectsTab from './components/tabs/ProjectsTab';
+import ArcadeTab from './components/tabs/ArcadeTab';
 import AchievementsTab from './components/tabs/AchievementsTab';
 import BlogsTab from './components/tabs/BlogsTab';
 
 function App() {
-  const [isSplineLoaded, setIsSplineLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState('home');
+  const [activeTab, setActiveTab] = useState('projects'); // Open on projects matching user intent!
+  const [isConsoleOpen, setIsConsoleOpen] = useState(false);
+  const [activeGame, setActiveGame] = useState(null);
+
+  // Global keyboard shortcut for ⌘K / Ctrl+K
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsConsoleOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   return (
-    <div className="app-container">
-      {/* 3D Background */}
-      <ThreeBackground 
-        isSplineLoaded={isSplineLoaded} 
-        setIsSplineLoaded={setIsSplineLoaded} 
+    <div className="portfolio-app-root">
+      {/* Interactive WebGL Starfield and Ambient Nebula */}
+      <StarfieldCanvas />
+
+      {/* Main UI Overlay */}
+      <div className="portfolio-content-layer">
+        {/* Sticky Header with Rolling Navigation & Console Trigger */}
+        <Header 
+          activeTab={activeTab} 
+          setActiveTab={setActiveTab} 
+          onOpenConsole={() => setIsConsoleOpen(true)}
+        />
+
+        {/* Dynamic Page Views with Smooth Motion Transitions */}
+        <div className="portfolio-main-viewport">
+          <AnimatePresence mode="wait">
+            {activeTab === 'home' && <HomeTab key="home" setActiveTab={setActiveTab} />}
+            {activeTab === 'projects' && <ProjectsTab key="projects" setActiveTab={setActiveTab} />}
+            {activeTab === 'experience' && <ExperienceTab key="experience" setActiveTab={setActiveTab} />}
+            {activeTab === 'arcade' && <ArcadeTab key="arcade" />}
+            {activeTab === 'achievements' && <AchievementsTab key="achievements" setActiveTab={setActiveTab} />}
+            {activeTab === 'blogs' && <BlogsTab key="blogs" setActiveTab={setActiveTab} />}
+          </AnimatePresence>
+        </div>
+
+        {/* Global Footer */}
+        <Footer />
+
+        {/* Floating Mobile Dock Navigation */}
+        <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
+      </div>
+
+      {/* ⌘K Navigation Console Modal */}
+      <CommandPalette
+        isOpen={isConsoleOpen}
+        onClose={() => setIsConsoleOpen(false)}
+        setActiveTab={setActiveTab}
+        onOpenGame={(gameId) => setActiveGame(gameId)}
       />
 
-      {/* Foreground UI */}
-      {isSplineLoaded && (
-        <motion.div 
-          className="ui-layer"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-        >
-          {/* Header */}
-          <Header activeTab={activeTab} setActiveTab={setActiveTab} />
-
-          {/* Main Content Area */}
-          <AnimatePresence mode="wait">
-            {activeTab === 'home' && <HomeTab />}
-            {activeTab === 'experience' && <ExperienceTab setActiveTab={setActiveTab} />}
-            {activeTab === 'projects' && <ProjectsTab setActiveTab={setActiveTab} />}
-            {activeTab === 'achievements' && <AchievementsTab setActiveTab={setActiveTab} />}
-            {activeTab === 'blogs' && <BlogsTab setActiveTab={setActiveTab} />}
-          </AnimatePresence>
-
-          {/* Footer Socials */}
-          {activeTab === 'home' && <Footer />}
-        </motion.div>
+      {/* Interactive Arcade Mini-Game Modal */}
+      {activeGame && (
+        <PlaygroundModal
+          gameId={activeGame}
+          onClose={() => setActiveGame(null)}
+        />
       )}
     </div>
   );

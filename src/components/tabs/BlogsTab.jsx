@@ -17,7 +17,7 @@ export default function BlogsTab({ setActiveTab }) {
         <button className="back-button" onClick={() => setActiveTab('home')}>
           <ArrowLeft size={16} /> Back
         </button>
-        <h2>Articles & Blogs</h2>
+        <h2>Publications & Talks</h2>
         
         <div className="projects-grid">
           {BLOGS_DATA.map((blog, index) => (
