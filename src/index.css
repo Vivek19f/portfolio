@@ -3163,3 +3163,282 @@ button {
     align-items: flex-start;
   }
 }
+
+/* ---------------- CELESTIAL STARDATE OBSERVER HUD ---------------- */
+.celestial-controller-root {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 45;
+}
+
+@media (max-width: 768px) {
+  .celestial-controller-root {
+    bottom: calc(76px + env(safe-area-inset-bottom));
+    right: 14px;
+  }
+}
+
+.celestial-dock-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  background: rgba(13, 20, 36, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 240, 255, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  user-select: none;
+}
+
+.celestial-dock-pill:hover {
+  background: rgba(18, 28, 52, 0.95);
+  border-color: rgba(0, 240, 255, 0.5);
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.7), 0 0 18px rgba(0, 240, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.celestial-dock-pill.active-open {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
+}
+
+.celestial-season-badge {
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.2);
+  color: var(--accent);
+}
+
+.celestial-pill-arrow-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.celestial-pill-arrow-btn:hover {
+  background: var(--accent);
+  color: #070a12;
+}
+
+.celestial-pill-toggle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  margin-left: 2px;
+}
+
+/* Expanded Modal / Drawer */
+.celestial-drawer-panel {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  right: 0;
+  width: 360px;
+  max-width: calc(100vw - 28px);
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(10, 16, 30, 0.94);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.18);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  z-index: 50;
+}
+
+.celestial-drawer-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.celestial-year-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+  padding: 6px 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 10px;
+}
+
+.celestial-year-steppers {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+}
+
+.celestial-step-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3px 8px;
+  font-size: 11px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  transition: all 0.15s;
+}
+
+.celestial-step-btn:hover {
+  background: rgba(0, 240, 255, 0.2);
+  color: #ffffff;
+}
+
+.celestial-year-display {
+  font-size: 1.05rem;
+  letter-spacing: 0.05em;
+}
+
+.celestial-months-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.celestial-month-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  transition: all 0.15s;
+}
+
+.celestial-month-chip:hover {
+  background: rgba(0, 240, 255, 0.12);
+  border-color: rgba(0, 240, 255, 0.35);
+}
+
+.celestial-month-chip.active-chip {
+  background: rgba(0, 240, 255, 0.2);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(0, 240, 255, 0.3);
+}
+
+.month-chip-code {
+  font-size: 11px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.celestial-month-chip.active-chip .month-chip-code {
+  color: var(--accent);
+}
+
+.month-chip-season {
+  font-size: 9px;
+  color: var(--text-muted);
+}
+
+.celestial-presets-section {
+  margin-bottom: 14px;
+}
+
+.celestial-presets-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.celestial-preset-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
+  transition: all 0.15s;
+}
+
+.celestial-preset-btn:hover {
+  background: rgba(0, 240, 255, 0.08);
+  border-color: rgba(0, 240, 255, 0.25);
+}
+
+.celestial-preset-btn.active-preset {
+  background: rgba(0, 240, 255, 0.15);
+  border-color: var(--accent);
+}
+
+.preset-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.preset-desc {
+  font-size: 9px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.celestial-drawer-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.celestial-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 12px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(0, 240, 255, 0.15);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: var(--accent);
+  transition: all 0.2s;
+}
+
+.celestial-action-btn:hover {
+  background: var(--accent);
+  color: #070a12;
+  box-shadow: 0 0 14px rgba(0, 240, 255, 0.35);
+}
+
+.celestial-action-btn.orbit-active {
+  background: var(--accent);
+  color: #070a12;
+  box-shadow: 0 0 16px rgba(0, 240, 255, 0.5);
+}
+
+.celestial-action-btn.ghost {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+}
+
+.celestial-action-btn.ghost:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+}
+

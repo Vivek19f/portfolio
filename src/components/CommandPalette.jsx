@@ -125,6 +125,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
   • contact      : Communication channels & email link
   • bench        : Real-time browser environment & WebGL telemetry
   • cat /resume  : Work history & leadership summary
+  • sky          : Open Celestial Stardate Observer (month/year selector)
   • warp         : Trigger hyperspace starfield acceleration
   • clear        : Clear console output history`
       });
@@ -181,6 +182,13 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`
       });
       // Fire custom event for starfield acceleration
       window.dispatchEvent(new CustomEvent('starfield-warp'));
+    } else if (lower.startsWith('sky') || lower === 'stargazer' || lower === 'orbit') {
+      soundEngine.playSuccess();
+      newEntries.push({
+        type: 'success',
+        text: `[CELESTIAL STARDATE OBSERVER] Engaging stardate console. Rotating night sky... 🔭`
+      });
+      window.dispatchEvent(new CustomEvent('starfield-open-observer'));
     } else if (lower === 'clear') {
       setCliHistory([]);
       setCliInput('');

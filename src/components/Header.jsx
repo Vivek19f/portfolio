@@ -1,8 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { Terminal, ArrowDown, Briefcase, Layers, Gamepad2, Award, BookOpen, Volume2, VolumeX } from 'lucide-react';
+import { Terminal, ArrowDown, Briefcase, Layers, Gamepad2, Award, BookOpen, Volume2, VolumeX, Compass } from 'lucide-react';
 import { soundEngine } from '../utils/soundEngine';
 
-export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
+export default function Header({ 
+  activeTab, 
+  setActiveTab, 
+  onOpenConsole,
+  skyMonth = 9,
+  skyYear = 2026,
+  onToggleCelestial
+}) {
   const [isSoundOn, setIsSoundOn] = useState(false);
 
   useEffect(() => {
@@ -77,6 +84,23 @@ export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
 
         {/* Right Actions */}
         <div className="header-actions">
+          {/* Stargazer Sky Date Trigger */}
+          <button
+            type="button"
+            onClick={() => {
+              soundEngine.playClick();
+              onToggleCelestial?.();
+            }}
+            aria-label="Open celestial stardate observer"
+            title="Adjust starfield Month & Year"
+            className="header-action-btn celestial-header-btn group"
+          >
+            <Compass size={15} className="text-accent group-hover:rotate-45 transition-transform" />
+            <span className="font-mono text-xs hidden lg:inline text-secondary group-hover:text-white">
+              {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][skyMonth]} '{String(skyYear).slice(-2)}
+            </span>
+          </button>
+
           {/* Audio Synthesizer Toggle */}
           <button
             type="button"
