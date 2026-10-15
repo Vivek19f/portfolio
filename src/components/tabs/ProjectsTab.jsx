@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { 
   ArrowRight, ExternalLink, Bomb, Hash, BrainCircuit, Bug, 
-  ChevronRight, Sparkles 
+  ChevronRight, Sparkles, Keyboard, LayoutGrid 
 } from 'lucide-react';
 import { 
   STAT_METRICS, 
@@ -24,6 +24,8 @@ export default function ProjectsTab({ setActiveTab }) {
       case 'hash': return Hash;
       case 'brain': return BrainCircuit;
       case 'bug': return Bug;
+      case 'grid': return LayoutGrid;
+      case 'keyboard': return Keyboard;
       default: return Sparkles;
     }
   };

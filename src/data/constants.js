@@ -168,13 +168,6 @@ export const SELECTED_WORK_DATA = [
 
 export const BUILT_FOR_FUN_DATA = [
   {
-    id: "minesweeper",
-    name: "Minesweeper",
-    description: "Clear a 12×12 board hiding 20 mines. Every board is solvable without guessing.",
-    icon: "bomb",
-    type: "puzzle"
-  },
-  {
     id: "quick-math",
     name: "Quick Math",
     description: "Rapid-fire arithmetic. 20 questions. No hesitation. Beat my time.",
@@ -182,18 +175,46 @@ export const BUILT_FOR_FUN_DATA = [
     type: "game"
   },
   {
-    id: "mini-sudoku",
-    name: "Mini Sudoku",
-    description: "A 6×6 sudoku with 2×3 boxes. Pure logic, never a guess.",
-    icon: "brain",
-    type: "puzzle"
-  },
-  {
     id: "code-review",
     name: "Code Review",
     description: "Three snippets, one bug each. Tap the line that breaks it.",
     icon: "bug",
     type: "game"
+  },
+  {
+    id: "minesweeper",
+    name: "Minesweeper",
+    description: "Clear a 8×8 board hiding 10 mines. Pure deductive logic, never guess.",
+    icon: "bomb",
+    type: "puzzle"
+  },
+  {
+    id: "mini-sudoku",
+    name: "Mini Sudoku",
+    description: "A 6×6 sudoku with 2×3 box constraints. Pure logic, interactive keypad.",
+    icon: "brain",
+    type: "puzzle"
+  },
+  {
+    id: "game-2048",
+    name: "2048: Dev Edition",
+    description: "Merge technology tiles from HTML & CSS up to Principal 2048.",
+    icon: "grid",
+    type: "game"
+  },
+  {
+    id: "speed-typer",
+    name: "Code Speedrun",
+    description: "30-second rapid syntax typing test with live WPM & accuracy metrics.",
+    icon: "keyboard",
+    type: "challenge"
+  },
+  {
+    id: "memory-matrix",
+    name: "Memory Matrix",
+    description: "Memorize and recall the flashing cyan grid pattern as complexity scales.",
+    icon: "sparkles",
+    type: "brain"
   }
 ];
 

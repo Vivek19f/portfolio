@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bomb, Hash, BrainCircuit, Bug, ArrowRight, Play, Flame } from 'lucide-react';
+import { Bomb, Hash, BrainCircuit, Bug, ArrowRight, Play, Flame, LayoutGrid, Keyboard, Sparkles } from 'lucide-react';
 import PlaygroundModal from '../PlaygroundModal';
 
 export default function ArcadeTab() {
@@ -10,34 +10,58 @@ export default function ArcadeTab() {
     {
       id: 'quick-math',
       title: 'Quick Math',
-      desc: 'Rapid-fire arithmetic. 20 questions. No hesitation. Beat my best time of 14.8 seconds.',
+      desc: 'Rapid-fire mental arithmetic. 10 rapid questions. No hesitation. Beat my best time of 14.8 seconds.',
       icon: Hash,
       record: '14.8s (Avg 0.74s/q)',
       tag: 'Speed Challenge'
     },
     {
       id: 'code-review',
-      title: 'Code Review',
-      desc: 'Three code snippets, one bug each. Tap the exact line that breaks production.',
+      title: 'Code Review Bug Spotter',
+      desc: 'Real production code snippets with sneaky bugs. Tap the exact line that triggers runtime crashes or race conditions.',
       icon: Bug,
-      record: '3/3 Bug Catch',
+      record: '5/5 Catch Rate',
       tag: 'Bug Hunter'
     },
     {
       id: 'minesweeper',
       title: 'Minesweeper',
-      desc: 'Clear a 8×8 board hiding 10 mines. Pure deductive logic, every board is solvable without guessing.',
+      desc: 'Clear an 8×8 board hiding 10 hidden mines. Deductive logic, zero-guess cascade, right-click to flag.',
       icon: Bomb,
       record: '42s Clear',
       tag: 'Deductive Logic'
     },
     {
       id: 'mini-sudoku',
-      title: 'Mini Sudoku',
-      desc: 'A 6×6 sudoku with 2×3 box constraints. Designed for a quick coffee-break brain warm up.',
+      title: 'Mini Sudoku 6×6',
+      desc: '6×6 grid with 2×3 subgrid constraints. Real-time conflict detection and interactive digit keypad.',
       icon: BrainCircuit,
-      record: '1m 12s',
+      record: '1m 08s Clear',
       tag: 'Spatial Puzzle'
+    },
+    {
+      id: 'game-2048',
+      title: '2048: Dev Edition',
+      desc: 'Slide and merge tech stack tiles from `var` and `CSS` up to `Docker`, `K8s`, and `Staff 🚀`. Supports Arrow keys & D-pad.',
+      icon: LayoutGrid,
+      record: 'Score: 4096',
+      tag: 'Algorithm Puzzle'
+    },
+    {
+      id: 'speed-typer',
+      title: 'Code Speedrun',
+      desc: '30-second rapid syntax typing test with real TypeScript and Python snippets. Live WPM and accuracy metrics.',
+      icon: Keyboard,
+      record: '98 WPM (99% Acc)',
+      tag: 'Typing Challenge'
+    },
+    {
+      id: 'memory-matrix',
+      title: 'Neural Memory Matrix',
+      desc: 'Memorize and recall flashing cyan tile patterns across 4×4 neural grids as complexity escalates.',
+      icon: Sparkles,
+      record: 'Level 8 Cleared',
+      tag: 'Working Memory'
     }
   ];
 
