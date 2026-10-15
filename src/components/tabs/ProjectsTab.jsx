@@ -5,7 +5,6 @@ import {
   ChevronRight, Sparkles, Keyboard, LayoutGrid 
 } from 'lucide-react';
 import { 
-  STAT_METRICS, 
   SELECTED_WORK_DATA, 
   BUILT_FOR_FUN_DATA, 
   ARCHIVE_DATA, 
@@ -45,19 +44,6 @@ export default function ProjectsTab({ setActiveTab }) {
         <p className="projects-hero-subtitle">
           Things I've shipped at work, things I built for fun, and every earlier version of this site.
         </p>
-      </div>
-
-      {/* Metrics Row matching aedit.me */}
-      <div className="metrics-row-grid">
-        {STAT_METRICS.map((stat, idx) => (
-          <div key={idx} className="metric-stat-box">
-            <span className="metric-stat-label font-mono">{stat.label}</span>
-            <div className="metric-stat-content">
-              <span className="metric-stat-number">{stat.value}</span>
-              <span className="metric-stat-sub font-mono">{stat.subtext}</span>
-            </div>
-          </div>
-        ))}
       </div>
 
       {/* Section 1: Selected Work */}

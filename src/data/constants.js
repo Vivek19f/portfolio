@@ -1,7 +1,7 @@
 export const SUBTITLES = [
-  "Senior Software Engineer.",
-  "Frontend Architect & UI Engineer.",
-  "System Designer & Open Source Contributor.",
+  "Staff Full Stack Engineer (TypeScript • Python • Node.js)",
+  "Frontend Architect & Distributed UI Systems",
+  "High-Throughput Analytics & Telemetry Architect",
   "Turning complex systems into binary || beauty."
 ];
 
