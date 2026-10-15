@@ -380,13 +380,28 @@ export const PROJECTS_DATA = SELECTED_WORK_DATA;
 
 export const BLOGS_DATA = [
   {
+    title: "The React Trap: Why Tutorials Are Making You Over-Engineer Your Apps",
+    url: "https://medium.com/@robotChat/the-react-trap-why-tutorials-are-making-you-over-engineer-your-apps-434646764f9a",
+    description: "An architectural deep-dive into client state vs server state, and why excessive Redux boilerplate slows down teams. How we replaced 10,000+ lines of code with React Query.",
+    date: "Oct 2026",
+    categories: ["React", "Architecture", "Redux", "React Query"],
+    readTime: "6 min read"
+  },
+  {
     title: "Digital Fortress vs. India’s Push for Private User Data: A Reality Check",
     url: "https://medium.com/@robotChat/digital-fortress-vs-indias-push-for-private-user-data-a-reality-check-ce625914e02c",
-    description: "An analysis of the privacy implications and technical challenges surrounding user data regulation."
+    description: "An analysis of the privacy implications and technical challenges surrounding user data regulation, encryption mandates, and surveillance architecture.",
+    date: "Mar 2025",
+    categories: ["Privacy", "Security", "Policy"],
+    readTime: "4 min read"
   },
   {
     title: "The Ultimate Guide to Django ORM Queries",
     url: "https://medium.com/@robotChat/getting-started-with-django-queries-c916a625ce59",
-    description: "A comprehensive guide on mastering Django ORM for efficient database querying."
+    description: "A comprehensive guide on mastering Django ORM for efficient database querying, Q objects, F expressions, prefetching, and window functions.",
+    date: "Dec 2022",
+    categories: ["Django", "Python", "Databases"],
+    readTime: "5 min read"
   }
 ];
+
