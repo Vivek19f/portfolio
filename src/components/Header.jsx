@@ -34,14 +34,12 @@ export default function Header({ activeTab, setActiveTab, onOpenConsole }) {
                 className={`nav-capsule-link group ${isActive ? 'active' : ''}`}
                 aria-current={isActive ? 'page' : undefined}
               >
-                {/* Predator 3-Point Laser Sight Active Indicator */}
+                {/* Active Electric Cyan Sparkle Indicator */}
                 {isActive && (
-                  <span className="predator-laser-sight" aria-hidden="true">
-                    <span className="laser-triangle">
-                      <span className="laser-dot dot-top" />
-                      <span className="laser-dot dot-bottom-left" />
-                      <span className="laser-dot dot-bottom-right" />
-                    </span>
+                  <span className="sparkle-indicator" aria-hidden="true">
+                    <svg viewBox="4 2 16 16" fill="currentColor" className="size-full">
+                      <path d="M12 2c.7 5.6 2.4 7.3 8 8-5.6.7-7.3 2.4-8 8-.7-5.6-2.4-7.3-8-8 5.6-.7 7.3-2.4 8-8Z" />
+                    </svg>
                   </span>
                 )}
 

@@ -43,7 +43,7 @@ export default function StarfieldCanvas() {
         speedX: (Math.random() - 0.5) * 0.15,
         speedY: (Math.random() - 0.5) * 0.15,
         depth: Math.random() * 0.8 + 0.2,
-        color: Math.random() > 0.85 ? '#ff1e42' : Math.random() > 0.75 ? '#ff7700' : '#ffffff', // Predator laser crimson & thermal infrared
+        color: Math.random() > 0.82 ? '#00f0ff' : Math.random() > 0.65 ? '#38bdf8' : '#ffffff', // Electric Cyan & Sky Blue
       });
     }
 
@@ -98,7 +98,7 @@ export default function StarfieldCanvas() {
         ctx.arc(drawX, drawY, star.radius, 0, Math.PI * 2);
         ctx.fillStyle = star.color;
         ctx.globalAlpha = finalAlpha;
-        ctx.shadowBlur = star.color === '#ff1e42' ? 8 : star.color === '#ff7700' ? 6 : 2;
+        ctx.shadowBlur = star.color === '#00f0ff' ? 8 : star.color === '#38bdf8' ? 6 : 2;
         ctx.shadowColor = star.color;
         ctx.fill();
         ctx.shadowBlur = 0;
@@ -121,8 +121,8 @@ export default function StarfieldCanvas() {
         const tailY = s.y - Math.sin(s.angle) * s.length;
 
         const grad = ctx.createLinearGradient(s.x, s.y, tailX, tailY);
-        grad.addColorStop(0, 'rgba(255, 30, 66, ' + s.alpha + ')');
-        grad.addColorStop(1, 'rgba(255, 30, 66, 0)');
+        grad.addColorStop(0, 'rgba(0, 240, 255, ' + s.alpha + ')');
+        grad.addColorStop(1, 'rgba(56, 189, 248, 0)');
 
         ctx.beginPath();
         ctx.moveTo(s.x, s.y);
