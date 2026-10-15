@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  ArrowRight, ExternalLink, Bomb, Hash, BrainCircuit, Bug, 
-  ChevronRight, Sparkles, Keyboard, LayoutGrid, Search, Filter, Layers
+  ArrowRight, ExternalLink, Hash, Bug, 
+  ChevronRight, Sparkles, Keyboard, Search, Filter, Layers
 } from 'lucide-react';
 import { 
   SELECTED_WORK_DATA, 
-  BUILT_FOR_FUN_DATA, 
-  ARCHIVE_DATA, 
-  PREVIOUS_VERSIONS_DATA 
+  BUILT_FOR_FUN_DATA 
 } from '../../data/constants';
 import CaseStudyModal from '../CaseStudyModal';
 import PlaygroundModal from '../PlaygroundModal';
@@ -41,11 +39,8 @@ export default function ProjectsTab({ setActiveTab }) {
 
   const getFunIcon = (iconName) => {
     switch (iconName) {
-      case 'bomb': return Bomb;
       case 'hash': return Hash;
-      case 'brain': return BrainCircuit;
       case 'bug': return Bug;
-      case 'grid': return LayoutGrid;
       case 'keyboard': return Keyboard;
       default: return Sparkles;
     }
@@ -238,70 +233,6 @@ export default function ProjectsTab({ setActiveTab }) {
               </div>
             );
           })}
-        </div>
-      </section>
-
-      {/* Section 3: Archive */}
-      <section className="projects-section-block">
-        <h2 className="section-mono-heading font-mono">&gt; Project_Archive</h2>
-        <div className="archive-list-container">
-          <table className="archive-table font-mono" aria-label="Project Archive">
-            <thead>
-              <tr className="archive-header-row">
-                <th className="archive-th text-left">YEAR</th>
-                <th className="archive-th text-left">PROJECT</th>
-                <th className="archive-th text-left hidden md:table-cell">BUILT WITH</th>
-                <th className="archive-th text-right">LINK</th>
-              </tr>
-            </thead>
-            <tbody>
-              {ARCHIVE_DATA.map((item, idx) => (
-                <tr key={idx} className="archive-row group">
-                  <td className="archive-td archive-year">{item.year}</td>
-                  <td className="archive-td archive-title">{item.name || item.title}</td>
-                  <td className="archive-td archive-tech hidden md:table-cell">
-                    {(item.stack || item.builtWith || []).join(' · ')}
-                  </td>
-                  <td className="archive-td text-right">
-                    {(item.url || item.link) ? (
-                      <a 
-                        href={item.url || item.link} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        onClick={() => soundEngine.playClick()}
-                        className="archive-link inline-flex items-center gap-1 group-hover:text-accent"
-                      >
-                        <ExternalLink size={14} />
-                      </a>
-                    ) : (
-                      <span className="text-muted-custom">—</span>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      {/* Section 4: Previous Versions */}
-      <section className="projects-section-block">
-        <h2 className="section-mono-heading font-mono">&gt; Previous_Versions</h2>
-        <div className="versions-pill-list">
-          {PREVIOUS_VERSIONS_DATA.map((ver, idx) => (
-            <a
-              key={idx}
-              href={ver.url || ver.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => soundEngine.playClick()}
-              className="version-capsule-item group"
-            >
-              <span className="version-name font-mono">{ver.version}</span>
-              <span className="version-year font-mono">{ver.years || ver.year}</span>
-              <ExternalLink size={12} className="version-icon group-hover:text-accent" />
-            </a>
-          ))}
         </div>
       </section>
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Bomb, Hash, BrainCircuit, Bug, ArrowRight, Play, Flame, LayoutGrid, Keyboard, Sparkles } from 'lucide-react';
+import { Hash, Bug, ArrowRight, Play, Flame, Keyboard, Sparkles } from 'lucide-react';
 import PlaygroundModal from '../PlaygroundModal';
 
 export default function ArcadeTab() {
@@ -18,34 +18,10 @@ export default function ArcadeTab() {
     {
       id: 'code-review',
       title: 'Code Review Bug Spotter',
-      desc: 'Real production code snippets with sneaky bugs. Tap the exact line that triggers runtime crashes or race conditions.',
+      desc: 'Three production code snippets, one bug each. Tap the exact line that breaks it.',
       icon: Bug,
-      record: '5/5 Catch Rate',
+      record: '3/3 Bugs Caught',
       tag: 'Bug Hunter'
-    },
-    {
-      id: 'minesweeper',
-      title: 'Minesweeper',
-      desc: 'Clear an 8×8 board hiding 10 hidden mines. Deductive logic, zero-guess cascade, right-click to flag.',
-      icon: Bomb,
-      record: '42s Clear',
-      tag: 'Deductive Logic'
-    },
-    {
-      id: 'mini-sudoku',
-      title: 'Mini Sudoku 6×6',
-      desc: '6×6 grid with 2×3 subgrid constraints. Real-time conflict detection and interactive digit keypad.',
-      icon: BrainCircuit,
-      record: '1m 08s Clear',
-      tag: 'Spatial Puzzle'
-    },
-    {
-      id: 'game-2048',
-      title: '2048: Dev Edition',
-      desc: 'Slide and merge tech stack tiles from `var` and `CSS` up to `Docker`, `K8s`, and `Staff 🚀`. Supports Arrow keys & D-pad.',
-      icon: LayoutGrid,
-      record: 'Score: 4096',
-      tag: 'Algorithm Puzzle'
     },
     {
       id: 'speed-typer',

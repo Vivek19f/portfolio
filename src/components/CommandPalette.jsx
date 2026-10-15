@@ -43,8 +43,8 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
       items: [
         { id: 'math', label: 'Play Quick Math Challenge', icon: Sparkles, action: () => { soundEngine.playClick(); onOpenGame('quick-math'); onClose(); } },
         { id: 'code', label: 'Play Code Review: Spot the Bug', icon: Terminal, action: () => { soundEngine.playClick(); onOpenGame('code-review'); onClose(); } },
-        { id: '2048', label: 'Play 2048 Number Puzzle', icon: Gamepad2, action: () => { soundEngine.playClick(); onOpenGame('2048'); onClose(); } },
-        { id: 'sudoku', label: 'Play Mini Sudoku (6x6 Logic)', icon: Sparkles, action: () => { soundEngine.playClick(); onOpenGame('mini-sudoku'); onClose(); } },
+        { id: 'speedrun', label: 'Play Code Speedrun (Typing Test)', icon: Terminal, action: () => { soundEngine.playClick(); onOpenGame('speed-typer'); onClose(); } },
+        { id: 'memory', label: 'Play Neural Memory Matrix', icon: Sparkles, action: () => { soundEngine.playClick(); onOpenGame('memory-matrix'); onClose(); } },
       ]
     },
     {

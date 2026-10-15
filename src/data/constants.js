@@ -224,27 +224,6 @@ export const BUILT_FOR_FUN_DATA = [
     type: "game"
   },
   {
-    id: "minesweeper",
-    name: "Minesweeper",
-    description: "Clear a 8×8 board hiding 10 mines. Pure deductive logic, never guess.",
-    icon: "bomb",
-    type: "puzzle"
-  },
-  {
-    id: "mini-sudoku",
-    name: "Mini Sudoku",
-    description: "A 6×6 sudoku with 2×3 box constraints. Pure logic, interactive keypad.",
-    icon: "brain",
-    type: "puzzle"
-  },
-  {
-    id: "game-2048",
-    name: "2048: Dev Edition",
-    description: "Merge technology tiles from HTML & CSS up to Principal 2048.",
-    icon: "grid",
-    type: "game"
-  },
-  {
     id: "speed-typer",
     name: "Code Speedrun",
     description: "30-second rapid syntax typing test with live WPM & accuracy metrics.",
@@ -257,52 +236,6 @@ export const BUILT_FOR_FUN_DATA = [
     description: "Memorize and recall the flashing cyan grid pattern as complexity scales.",
     icon: "sparkles",
     type: "brain"
-  }
-];
-
-export const ARCHIVE_DATA = [
-  {
-    year: "2024",
-    name: "Xebia Frontend Challenge",
-    description: "High-performance state-driven application evaluation platform with algorithm scoring and test verification.",
-    url: "https://github.com/Vivek19f/xebia_frontend_challenge",
-    stack: ["React", "TypeScript", "Jest", "Tailwind CSS"]
-  },
-  {
-    year: "2023",
-    name: "Flight Turnaround Ops Dashboard",
-    description: "Real-time gate operation and aircraft turnaround tracking engine deployed for operations crews at Delta Airlines.",
-    url: "https://github.com/Vivek19f",
-    stack: ["React", "WebSockets", "AWS", "Node.js"]
-  },
-  {
-    year: "2021",
-    name: "ProemSports Fan Engagement Engine",
-    description: "Interactive real-time sports telemetry platform delivering sub-second live match feeds and statistical overlays.",
-    url: "https://github.com/Vivek19f",
-    stack: ["React", "Redux", "Python", "MongoDB"]
-  },
-  {
-    year: "2019",
-    name: "Enterprise Core Insurance Portal",
-    description: "Modernized legacy policy workflows into responsive single-page web applications with reactive form validations.",
-    url: "https://github.com/Vivek19f",
-    stack: ["JavaScript", "React", "RESTful APIs", "Bootstrap"]
-  }
-];
-
-export const PREVIOUS_VERSIONS_DATA = [
-  {
-    version: "v2",
-    years: "2021 - 2024",
-    tech: "React, Three.js, Spline 3D, Sass, glassmorphism design system.",
-    url: "https://github.com/Vivek19f/portfolio"
-  },
-  {
-    version: "v1",
-    years: "2019 - 2021",
-    tech: "HTML5, CSS3, JavaScript, particles.js ambient particle canvas.",
-    url: "https://github.com/Vivek19f"
   }
 ];
 
