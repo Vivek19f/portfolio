@@ -1947,6 +1947,20 @@ button {
   backdrop-filter: blur(14px);
 }
 
+.experience-card h2 {
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: #fff;
+  margin-top: 48px;
+  margin-bottom: 28px;
+}
+
+.experience-card h2:first-of-type {
+  margin-top: 12px;
+  margin-bottom: 28px;
+}
+
 .back-button {
   display: inline-flex;
   align-items: center;
