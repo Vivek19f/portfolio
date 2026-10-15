@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { GitCommit, Star, FolderGit2, Activity, Cpu, ExternalLink } from 'lucide-react';
-import { fetchGitHubTelemetry } from '../services/githubService';
+import { fetchGitHubTelemetry, getSynchronousTelemetry } from '../services/githubService';
 
 export default function GitHubTelemetryBar() {
-  const [telemetry, setTelemetry] = useState(null);
+  const [telemetry, setTelemetry] = useState(() => getSynchronousTelemetry());
   const [fps, setFps] = useState(60);
 
   // Measure real client frame rate
@@ -16,7 +16,8 @@ export default function GitHubTelemetryBar() {
       frameCount++;
       const now = performance.now();
       if (now - lastTime >= 1000) {
-        setFps(Math.min(60, Math.round((frameCount * 1000) / (now - lastTime))));
+        const measured = Math.min(60, Math.round((frameCount * 1000) / (now - lastTime)));
+        setFps((prev) => (prev === measured ? prev : measured));
         frameCount = 0;
         lastTime = now;
       }
@@ -30,17 +31,13 @@ export default function GitHubTelemetryBar() {
   useEffect(() => {
     let mounted = true;
     fetchGitHubTelemetry().then((data) => {
-      if (mounted) setTelemetry(data);
+      if (mounted && data) setTelemetry(data);
     });
     return () => { mounted = false; };
   }, []);
 
   if (!telemetry) {
-    return (
-      <div className="telemetry-bar-skeleton">
-        <div className="telemetry-skeleton-line"></div>
-      </div>
-    );
+    return null;
   }
 
   const { stats, latestActivity, source } = telemetry;

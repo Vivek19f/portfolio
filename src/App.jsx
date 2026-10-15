@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import './index.css';
 
 import Header from './components/Header';
@@ -46,6 +45,11 @@ function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
 
+  // Instant scroll-to-top on tab switch to avoid scroll trapping/jumping
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+  }, [activeTab]);
+
   const isSingleView = activeTab === 'home';
 
   return (
@@ -62,16 +66,14 @@ function App() {
           onOpenConsole={() => setIsConsoleOpen(true)}
         />
 
-        {/* Dynamic Page Views with Smooth Motion Transitions */}
+        {/* Dynamic Page Views with Instant Mount & Snappy Motion */}
         <div className={`portfolio-main-viewport ${isSingleView ? 'single-view-viewport' : ''}`}>
-          <AnimatePresence mode="wait">
-            {activeTab === 'home' && <HomeTab key="home" setActiveTab={setActiveTab} />}
-            {activeTab === 'projects' && <ProjectsTab key="projects" setActiveTab={setActiveTab} />}
-            {activeTab === 'experience' && <ExperienceTab key="experience" setActiveTab={setActiveTab} />}
-            {activeTab === 'arcade' && <ArcadeTab key="arcade" />}
-            {activeTab === 'achievements' && <AchievementsTab key="achievements" setActiveTab={setActiveTab} />}
-            {activeTab === 'blogs' && <BlogsTab key="blogs" setActiveTab={setActiveTab} />}
-          </AnimatePresence>
+          {activeTab === 'home' && <HomeTab key="home" setActiveTab={setActiveTab} />}
+          {activeTab === 'projects' && <ProjectsTab key="projects" setActiveTab={setActiveTab} />}
+          {activeTab === 'experience' && <ExperienceTab key="experience" setActiveTab={setActiveTab} />}
+          {activeTab === 'arcade' && <ArcadeTab key="arcade" />}
+          {activeTab === 'achievements' && <AchievementsTab key="achievements" setActiveTab={setActiveTab} />}
+          {activeTab === 'blogs' && <BlogsTab key="blogs" setActiveTab={setActiveTab} />}
         </div>
 
         {/* Global Contact Footer on scrollable tabs */}

@@ -41,6 +41,23 @@ function getRelativeTime(isoDateStr) {
   }
 }
 
+export function getSynchronousTelemetry() {
+  if (typeof window !== 'undefined') {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed?.data) {
+          return { ...parsed.data, source: 'cached' };
+        }
+      }
+    } catch {
+      // Ignore localStorage read errors
+    }
+  }
+  return FALLBACK_DATA;
+}
+
 export async function fetchGitHubTelemetry() {
   if (typeof window !== 'undefined') {
     try {

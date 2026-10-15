@@ -70,10 +70,10 @@ export default function BlogsTab({ setActiveTab }) {
     <motion.main 
       key="blogs"
       className="main-content experience-section"
-      initial={{ opacity: 0, y: 14 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -14 }}
-      transition={{ duration: 0.35 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.15 }}
     >
       <div className="glass-panel experience-card blogs-container">
         <div className="blogs-header-row">
@@ -120,9 +120,9 @@ export default function BlogsTab({ setActiveTab }) {
             <motion.article 
               key={blog.url || index} 
               className="blog-feed-card"
-              initial={{ opacity: 0, y: 12 }}
+              initial={false}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.08, duration: 0.3 }}
+              transition={{ duration: 0.15 }}
             >
               <div className="blog-card-meta-top">
                 <div className="blog-card-date-wrap">

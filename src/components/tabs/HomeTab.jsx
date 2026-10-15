@@ -18,10 +18,10 @@ export default function HomeTab({ setActiveTab }) {
     <motion.main 
       key="home"
       className="home-single-view"
-      initial={{ opacity: 0, y: 15 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -15 }}
-      transition={{ duration: 0.4 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.15 }}
     >
       <div className="home-hero-container">
         {/* Availability Badge */}

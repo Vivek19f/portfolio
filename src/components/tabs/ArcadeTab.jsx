@@ -69,10 +69,10 @@ export default function ArcadeTab() {
     <motion.main
       key="arcade-page"
       className="projects-page-container arcade-page-container"
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={{ duration: 0.4 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.15 }}
     >
       <div className="projects-hero-header">
         <h1 className="projects-main-title">I Play</h1>

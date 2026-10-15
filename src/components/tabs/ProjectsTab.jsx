@@ -55,10 +55,10 @@ export default function ProjectsTab({ setActiveTab }) {
     <motion.main
       key="projects-page"
       className="projects-page-container"
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 8 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={{ duration: 0.4 }}
+      exit={{ opacity: 0, y: -8 }}
+      transition={{ duration: 0.15 }}
     >
       {/* Hero Header */}
       <div className="projects-hero-header">
@@ -136,15 +136,15 @@ export default function ProjectsTab({ setActiveTab }) {
           </div>
         ) : (
           <div className="selected-work-grid">
-            <AnimatePresence>
+            <AnimatePresence mode="popLayout" initial={false}>
               {filteredProjects.map((project) => (
                 <motion.article 
                   key={project.id} 
                   layout
-                  initial={{ opacity: 0, scale: 0.98 }}
+                  initial={false}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.98 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.15 }}
                   className="selected-work-card group"
                 >
                   <div className="card-top-content">
