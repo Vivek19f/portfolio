@@ -12,14 +12,15 @@
   --text-secondary: rgba(242, 239, 234, 0.72);
   --text-muted: rgba(242, 239, 234, 0.45);
   
-  --accent: #ffca83;
-  --accent-glow: rgba(255, 202, 131, 0.35);
-  --accent-light: #ffe3bd;
+  --accent: #00f5a0;
+  --accent-glow: rgba(0, 245, 160, 0.4);
+  --accent-light: #6ee7b7;
+  --accent-emerald: #10b981;
   
-  --card-bg: rgba(20, 20, 25, 0.45);
-  --card-bg-hover: rgba(28, 28, 36, 0.65);
+  --card-bg: rgba(14, 20, 18, 0.45);
+  --card-bg-hover: rgba(18, 28, 24, 0.65);
   --card-border: rgba(255, 255, 255, 0.08);
-  --card-border-hover: rgba(255, 202, 131, 0.35);
+  --card-border-hover: rgba(0, 245, 160, 0.35);
   
   --font-sans: 'Onest', 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -83,7 +84,7 @@ button {
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  background: radial-gradient(circle at 50% 10%, #1c1c22 0%, #0d0d10 60%, #08080a 100%);
+  background: radial-gradient(circle at 50% 10%, #0f1c16 0%, #090e0c 60%, #060807 100%);
 }
 
 .starfield-canvas {
@@ -104,7 +105,7 @@ button {
   right: -100px;
   width: 600px;
   height: 600px;
-  background: radial-gradient(circle, rgba(255, 202, 131, 0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0, 245, 160, 0.09) 0%, transparent 70%);
 }
 
 .nebula-bottom {
@@ -112,7 +113,7 @@ button {
   left: -150px;
   width: 700px;
   height: 700px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.07) 0%, transparent 70%);
 }
 
 /* ---------------- APP LAYOUT ---------------- */
@@ -226,14 +227,14 @@ button {
   width: 12px;
   height: 12px;
   color: var(--accent);
-  filter: drop-shadow(0 0 6px rgba(255, 202, 131, 0.9));
+  filter: drop-shadow(0 0 6px rgba(0, 245, 160, 0.9));
   pointer-events: none;
   animation: pulse-sparkle 2.5s ease-in-out infinite;
 }
 
 @keyframes pulse-sparkle {
   0%, 100% { transform: scale(1); opacity: 0.9; }
-  50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 9px rgba(255, 202, 131, 1)); }
+  50% { transform: scale(1.15); opacity: 1; filter: drop-shadow(0 0 9px rgba(0, 245, 160, 1)); }
 }
 
 .nav-item-icon {
@@ -826,7 +827,7 @@ button {
   font-size: 0.72rem;
   padding: 3px 10px;
   border-radius: 9999px;
-  background: rgba(255, 202, 131, 0.1);
+  background: rgba(0, 245, 160, 0.1);
 }
 
 .arcade-card-title {
@@ -985,8 +986,8 @@ button {
   gap: 14px;
   padding: 18px;
   border-radius: 12px;
-  background: rgba(255, 202, 131, 0.05);
-  border: 1px solid rgba(255, 202, 131, 0.18);
+  background: rgba(0, 245, 160, 0.05);
+  border: 1px solid rgba(0, 245, 160, 0.18);
 }
 
 .metrics-grid {
@@ -1116,8 +1117,8 @@ button {
   justify-content: center;
   padding: 40px;
   border-radius: 16px;
-  background: rgba(255, 202, 131, 0.04);
-  border: 1px solid rgba(255, 202, 131, 0.15);
+  background: rgba(0, 245, 160, 0.04);
+  border: 1px solid rgba(0, 245, 160, 0.15);
 }
 
 .math-expression {
@@ -1381,7 +1382,7 @@ button {
 
 .console-item:hover,
 .console-item.selected {
-  background: rgba(255, 202, 131, 0.08);
+  background: rgba(0, 245, 160, 0.08);
   color: #fff;
 }
 
