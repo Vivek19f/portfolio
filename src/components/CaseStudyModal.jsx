@@ -1,17 +1,19 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink, CheckCircle2, ArrowRight, ShieldCheck, Zap, GitBranch } from 'lucide-react';
-import { soundEngine } from '../utils/soundEngine';
+import { useEscapeKey } from '../hooks/useEscapeKey';
+import { useSound } from '../hooks/useSound';
 
 export default function CaseStudyModal({ project, onClose }) {
+  const { playModalOpen, playClick } = useSound();
+
+  useEscapeKey(onClose, Boolean(project));
+
   useEffect(() => {
-    soundEngine.playModalOpen();
-    const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+    if (project) {
+      playModalOpen();
+    }
+  }, [project, playModalOpen]);
 
   if (!project || !project.caseStudy) return null;
 
@@ -40,7 +42,7 @@ export default function CaseStudyModal({ project, onClose }) {
             <button 
               className="modal-close-btn" 
               onClick={() => {
-                soundEngine.playClick();
+                playClick();
                 onClose();
               }} 
               aria-label="Close modal"
@@ -153,7 +155,7 @@ export default function CaseStudyModal({ project, onClose }) {
                 href={project.link}
                 target="_blank"
                 rel="noopener noreferrer"
-                onClick={() => soundEngine.playClick()}
+                onClick={() => playClick()}
                 className="action-btn primary-glow-btn"
               >
                 <span>View Repository</span>

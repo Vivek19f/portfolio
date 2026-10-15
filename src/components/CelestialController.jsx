@@ -4,7 +4,8 @@ import {
   Compass, ChevronLeft, ChevronRight, Play, Pause, RotateCcw, 
   Sparkles, X, ChevronUp, ChevronDown 
 } from 'lucide-react';
-import { soundEngine } from '../utils/soundEngine';
+import { useSound } from '../hooks/useSound';
+import { useEscapeKey } from '../hooks/useEscapeKey';
 
 const MONTHS = [
   { short: 'JAN', full: 'January', season: 'Winter' },
@@ -38,7 +39,11 @@ export default function CelestialController({
   isOpen,
   setIsOpen
 }) {
+  const { playClick, playTabSwitch, playSuccess } = useSound();
   const currentMonthData = MONTHS[month] || MONTHS[9];
+
+  // Reusable Escape key listener to close expanded HUD
+  useEscapeKey(() => setIsOpen(false), isOpen);
 
   React.useEffect(() => {
     const handleOpen = () => setIsOpen(true);
@@ -48,41 +53,41 @@ export default function CelestialController({
 
   const handlePrevMonth = (e) => {
     e?.stopPropagation();
-    soundEngine.playClick();
+    playClick();
     if (isAutoOrbit) setIsAutoOrbit(false);
     setMonth((m) => (m === 0 ? 11 : m - 1));
   };
 
   const handleNextMonth = (e) => {
     e?.stopPropagation();
-    soundEngine.playClick();
+    playClick();
     if (isAutoOrbit) setIsAutoOrbit(false);
     setMonth((m) => (m === 11 ? 0 : m + 1));
   };
 
   const handleYearChange = (delta) => {
-    soundEngine.playClick();
+    playClick();
     if (isAutoOrbit) setIsAutoOrbit(false);
     setYear((y) => Math.max(1990, Math.min(2035, y + delta)));
   };
 
   const handleSelectMonth = (idx) => {
-    soundEngine.playTabSwitch();
+    playTabSwitch();
     if (isAutoOrbit) setIsAutoOrbit(false);
     setMonth(idx);
   };
 
   const handleToggleOrbit = () => {
     if (!isAutoOrbit) {
-      soundEngine.playSuccess();
+      playSuccess();
     } else {
-      soundEngine.playClick();
+      playClick();
     }
     setIsAutoOrbit((prev) => !prev);
   };
 
   const handleResetToToday = () => {
-    soundEngine.playClick();
+    playClick();
     const now = new Date();
     setMonth(now.getMonth());
     setYear(now.getFullYear());
@@ -95,7 +100,7 @@ export default function CelestialController({
       <div 
         className={`celestial-dock-pill ${isOpen ? 'active-open' : ''}`}
         onClick={() => {
-          soundEngine.playClick();
+          playClick();
           setIsOpen((prev) => !prev);
         }}
         title="Open Celestial Stardate Observer (Change starfield Month & Year)"
@@ -243,7 +248,7 @@ export default function CelestialController({
                       key={p.label}
                       type="button"
                       onClick={() => {
-                        soundEngine.playTabSwitch();
+                        playTabSwitch();
                         setMonth(p.month);
                         setYear(p.year);
                         if (isAutoOrbit) setIsAutoOrbit(false);

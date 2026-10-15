@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './index.css';
 
 import Header from './components/Header';
@@ -9,15 +9,11 @@ import MobileNav from './components/MobileNav';
 import PlaygroundModal from './components/PlaygroundModal';
 import CelestialController from './components/CelestialController';
 
-import HomeTab from './components/tabs/HomeTab';
-import ExperienceTab from './components/tabs/ExperienceTab';
-import ProjectsTab from './components/tabs/ProjectsTab';
-import ArcadeTab from './components/tabs/ArcadeTab';
-import AchievementsTab from './components/tabs/AchievementsTab';
-import BlogsTab from './components/tabs/BlogsTab';
+import { TABS, getTabTitle } from './data/tabs';
+import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('home'); // Landing page opens on Home in single view!
+  const [activeTab, setActiveTab] = useState('home'); // Landing page opens on Home in single view
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
   const [activeGame, setActiveGame] = useState(null);
 
@@ -27,30 +23,17 @@ function App() {
   const [isAutoOrbit, setIsAutoOrbit] = useState(false);
   const [isCelestialOpen, setIsCelestialOpen] = useState(false);
 
-  // Sync tab title with active view
+  // Sync document title with active tab config
   useEffect(() => {
-    const titles = {
-      home: 'Vivek Jhooria | Staff Full Stack Engineer',
-      projects: 'Projects | Vivek Jhooria',
-      experience: 'Experience | Vivek Jhooria',
-      arcade: 'Arcade | Vivek Jhooria',
-      achievements: 'Achievements | Vivek Jhooria',
-      blogs: 'Articles | Vivek Jhooria'
-    };
-    document.title = titles[activeTab] || 'Vivek Jhooria | Staff Full Stack Engineer';
+    document.title = getTabTitle(activeTab);
   }, [activeTab]);
 
   // Global keyboard shortcut for ⌘K / Ctrl+K
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setIsConsoleOpen((prev) => !prev);
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+  const toggleConsole = useCallback(() => {
+    setIsConsoleOpen((prev) => !prev);
   }, []);
+
+  useKeyboardShortcut('k', toggleConsole);
 
   // Persistent tab shell: once a tab is visited, it stays loaded in the DOM and is never re-loaded
   const [visitedTabs, setVisitedTabs] = useState(() => new Set(['home', activeTab]));
@@ -94,47 +77,25 @@ function App() {
 
         {/* Persistent Page Views: Loaded Once, Cached in DOM, Zero Reload Lag */}
         <div className={`portfolio-main-viewport ${isSingleView ? 'single-view-viewport' : ''}`}>
-          <div 
-            id="panel-home" 
-            style={{ display: activeTab === 'home' ? 'contents' : 'none' }}
-          >
-            <HomeTab setActiveTab={setActiveTab} />
-          </div>
+          {TABS.map((tab) => {
+            const isTabActive = activeTab === tab.id;
+            const hasBeenVisited = visitedTabs.has(tab.id);
+            const TabComponent = tab.component;
 
-          <div 
-            id="panel-projects" 
-            style={{ display: activeTab === 'projects' ? 'block' : 'none' }}
-          >
-            {visitedTabs.has('projects') && <ProjectsTab setActiveTab={setActiveTab} />}
-          </div>
-
-          <div 
-            id="panel-experience" 
-            style={{ display: activeTab === 'experience' ? 'block' : 'none' }}
-          >
-            {visitedTabs.has('experience') && <ExperienceTab setActiveTab={setActiveTab} />}
-          </div>
-
-          <div 
-            id="panel-arcade" 
-            style={{ display: activeTab === 'arcade' ? 'block' : 'none' }}
-          >
-            {visitedTabs.has('arcade') && <ArcadeTab />}
-          </div>
-
-          <div 
-            id="panel-achievements" 
-            style={{ display: activeTab === 'achievements' ? 'block' : 'none' }}
-          >
-            {visitedTabs.has('achievements') && <AchievementsTab setActiveTab={setActiveTab} />}
-          </div>
-
-          <div 
-            id="panel-blogs" 
-            style={{ display: activeTab === 'blogs' ? 'block' : 'none' }}
-          >
-            {visitedTabs.has('blogs') && <BlogsTab setActiveTab={setActiveTab} />}
-          </div>
+            return (
+              <div
+                key={tab.id}
+                id={`panel-${tab.id}`}
+                style={{
+                  display: isTabActive ? tab.displayType || 'block' : 'none',
+                }}
+              >
+                {(hasBeenVisited || isTabActive) && (
+                  <TabComponent setActiveTab={setActiveTab} />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Global Contact Footer on scrollable tabs */}

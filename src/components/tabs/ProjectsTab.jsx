@@ -11,9 +11,10 @@ import {
 import CaseStudyModal from '../CaseStudyModal';
 import PlaygroundModal from '../PlaygroundModal';
 import GitHubTelemetryBar from '../GitHubTelemetryBar';
-import { soundEngine } from '../../utils/soundEngine';
+import { useSound } from '../../hooks/useSound';
 
 export default function ProjectsTab({ setActiveTab }) {
+  const { playClick, playTabSwitch } = useSound();
   const [activeCaseStudy, setActiveCaseStudy] = useState(null);
   const [activeGame, setActiveGame] = useState(null);
   const [selectedFilter, setSelectedFilter] = useState('all');
@@ -76,7 +77,7 @@ export default function ProjectsTab({ setActiveTab }) {
                 <button
                   key={chip.id}
                   onClick={() => {
-                    soundEngine.playTabSwitch();
+                    playTabSwitch();
                     setSelectedFilter(chip.id);
                   }}
                   className={`filter-chip-btn font-mono ${isActive ? 'active' : ''}`}
@@ -153,7 +154,7 @@ export default function ProjectsTab({ setActiveTab }) {
                           href={project.link} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          onClick={() => soundEngine.playClick()}
+                          onClick={() => playClick()}
                           className="work-title-link"
                         >
                           {project.name}
@@ -184,7 +185,7 @@ export default function ProjectsTab({ setActiveTab }) {
                       <button
                         type="button"
                         onClick={() => {
-                          soundEngine.playClick();
+                          playClick();
                           setActiveCaseStudy(project);
                         }}
                         className="case-study-action-btn"
@@ -216,7 +217,7 @@ export default function ProjectsTab({ setActiveTab }) {
                 key={item.id} 
                 className="fun-game-card group cursor-pointer"
                 onClick={() => {
-                  soundEngine.playClick();
+                  playClick();
                   setActiveGame(item.id);
                 }}
               >

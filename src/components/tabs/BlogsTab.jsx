@@ -9,7 +9,7 @@ import {
   RefreshCw,
   Sparkles
 } from 'lucide-react';
-import { soundEngine } from '../../utils/soundEngine';
+import { useSound } from '../../hooks/useSound';
 import { 
   fetchMediumArticles, 
   MEDIUM_PROFILE_URL,
@@ -18,6 +18,7 @@ import {
 import { BLOGS_DATA } from '../../data/constants';
 
 export default function BlogsTab({ setActiveTab }) {
+  const { playClick, playSuccess } = useSound();
   const [articles, setArticles] = useState(BLOGS_DATA || FALLBACK_ARTICLES);
   const [, setLoading] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -47,7 +48,7 @@ export default function BlogsTab({ setActiveTab }) {
 
   const handleRefresh = async () => {
     try {
-      soundEngine.playClick();
+      playClick();
       setIsRefreshing(true);
       // Clear cache to force fresh pull
       if (typeof window !== 'undefined') {
@@ -57,7 +58,7 @@ export default function BlogsTab({ setActiveTab }) {
       if (res.articles && res.articles.length > 0) {
         setArticles(res.articles);
         setMeta({ isLive: res.isLive, source: 'fresh' });
-        soundEngine.playSuccess();
+        playSuccess();
       }
     } catch {
       // ignore
@@ -80,7 +81,7 @@ export default function BlogsTab({ setActiveTab }) {
           <button 
             className="back-button" 
             onClick={() => {
-              soundEngine.playClick();
+              playClick();
               setActiveTab('home');
             }}
           >
@@ -141,7 +142,7 @@ export default function BlogsTab({ setActiveTab }) {
                   href={blog.url} 
                   target="_blank" 
                   rel="noreferrer"
-                  onClick={() => soundEngine.playClick()}
+                  onClick={() => playClick()}
                 >
                   {blog.title}
                 </a>
@@ -165,7 +166,7 @@ export default function BlogsTab({ setActiveTab }) {
                   className="blog-read-link" 
                   target="_blank" 
                   rel="noreferrer"
-                  onClick={() => soundEngine.playClick()}
+                  onClick={() => playClick()}
                 >
                   <span>Read Article on Medium</span>
                   <ExternalLink size={14} />
@@ -190,7 +191,7 @@ export default function BlogsTab({ setActiveTab }) {
             target="_blank" 
             rel="noreferrer" 
             className="blogs-medium-cta"
-            onClick={() => soundEngine.playClick()}
+            onClick={() => playClick()}
           >
             <span>View Medium Profile</span>
             <ExternalLink size={14} />

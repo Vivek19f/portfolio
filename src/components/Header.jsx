@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Terminal, ArrowDown, Briefcase, Layers, Gamepad2, Award, BookOpen, Volume2, VolumeX, Compass } from 'lucide-react';
-import { soundEngine } from '../utils/soundEngine';
+import React from 'react';
+import { Terminal, ArrowDown, Volume2, VolumeX, Compass } from 'lucide-react';
+import { useSound } from '../hooks/useSound';
+import { NAV_TABS } from '../data/tabs';
 
 export default function Header({ 
   activeTab, 
@@ -10,24 +11,7 @@ export default function Header({
   skyYear = 2026,
   onToggleCelestial
 }) {
-  const [isSoundOn, setIsSoundOn] = useState(false);
-
-  useEffect(() => {
-    setIsSoundOn(soundEngine.isEnabled());
-  }, []);
-
-  const handleToggleSound = () => {
-    const nextState = soundEngine.toggle();
-    setIsSoundOn(nextState);
-  };
-
-  const navItems = [
-    { id: 'experience', labelTop: 'I Work', labelBottom: 'Experience', icon: Briefcase },
-    { id: 'projects', labelTop: 'I Build', labelBottom: 'Projects', icon: Layers },
-    { id: 'arcade', labelTop: 'I Play', labelBottom: 'Arcade', icon: Gamepad2 },
-    { id: 'achievements', labelTop: 'I Achieve', labelBottom: 'Awards', icon: Award },
-    { id: 'blogs', labelTop: 'I Write', labelBottom: 'Articles', icon: BookOpen },
-  ];
+  const { isSoundOn, toggleSound, playClick, playTabSwitch, playModalOpen } = useSound();
 
   return (
     <header className="site-header">
@@ -36,7 +20,7 @@ export default function Header({
         <div 
           className="brand-logo cursor-pointer"
           onClick={() => {
-            soundEngine.playClick();
+            playClick();
             setActiveTab('home');
           }}
         >
@@ -45,7 +29,7 @@ export default function Header({
 
         {/* Desktop Capsule Nav */}
         <div className="desktop-pill-nav">
-          {navItems.map((item) => {
+          {NAV_TABS.map((item) => {
             const isActive = activeTab === item.id;
             const IconComponent = item.icon;
 
@@ -53,7 +37,7 @@ export default function Header({
               <button
                 key={item.id}
                 onClick={() => {
-                  soundEngine.playTabSwitch();
+                  playTabSwitch();
                   setActiveTab(item.id);
                 }}
                 className={`nav-capsule-link group ${isActive ? 'active' : ''}`}
@@ -88,7 +72,7 @@ export default function Header({
           <button
             type="button"
             onClick={() => {
-              soundEngine.playClick();
+              playClick();
               onToggleCelestial?.();
             }}
             aria-label="Open celestial stardate observer"
@@ -104,7 +88,7 @@ export default function Header({
           {/* Audio Synthesizer Toggle */}
           <button
             type="button"
-            onClick={handleToggleSound}
+            onClick={toggleSound}
             aria-label={isSoundOn ? "Mute sound effects" : "Enable sound effects"}
             title={isSoundOn ? "Sound Effects: ON (Click to mute)" : "Sound Effects: OFF (Click to unmute)"}
             className={`header-action-btn sound-toggle-btn ${isSoundOn ? 'sound-active' : ''}`}
@@ -120,7 +104,7 @@ export default function Header({
           <button
             type="button"
             onClick={() => {
-              soundEngine.playModalOpen();
+              playModalOpen();
               onOpenConsole();
             }}
             aria-label="Open command palette"
@@ -135,7 +119,7 @@ export default function Header({
             href="https://github.com/Vivek19f"
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => soundEngine.playClick()}
+            onClick={() => playClick()}
             className="resume-pill-btn group"
           >
             <ArrowDown size={15} className="resume-icon group-hover:text-accent" />

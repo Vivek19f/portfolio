@@ -1,19 +1,11 @@
 import React from 'react';
-import { Briefcase, Layers, Gamepad2, Award, Mail } from 'lucide-react';
+import { NAV_TABS } from '../data/tabs';
 
 export default function MobileNav({ activeTab, setActiveTab }) {
-  const items = [
-    { id: 'experience', label: 'I Work', icon: Briefcase },
-    { id: 'projects', label: 'I Build', icon: Layers },
-    { id: 'arcade', label: 'I Play', icon: Gamepad2 },
-    { id: 'achievements', label: 'I Achieve', icon: Award },
-    { id: 'blogs', label: 'I Write', icon: Mail },
-  ];
-
   return (
     <nav className="mobile-dock-nav" aria-label="Mobile Navigation">
       <ul className="mobile-dock-grid">
-        {items.map((item) => {
+        {NAV_TABS.map((item) => {
           const isActive = activeTab === item.id;
           const IconComp = item.icon;
 
@@ -32,7 +24,7 @@ export default function MobileNav({ activeTab, setActiveTab }) {
                   </span>
                 )}
                 <IconComp size={20} className="mobile-dock-icon" />
-                <span className="mobile-dock-label font-mono">{item.label}</span>
+                <span className="mobile-dock-label font-mono">{item.mobileLabel}</span>
               </button>
             </li>
           );

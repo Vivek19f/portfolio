@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Terminal, Search, Briefcase, Layers, Gamepad2, Award, 
-  BookOpen, Mail, Copy, ArrowDown, Check, Sparkles, Code2, Play, CornerDownLeft
+  Terminal, Search, Copy, CornerDownLeft, Sparkles
 } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
-import { soundEngine } from '../utils/soundEngine';
+import { useEscapeKey } from '../hooks/useEscapeKey';
+import { useSound } from '../hooks/useSound';
+import { executeCliCommand } from '../utils/commandRegistry';
+import { TABS } from '../data/tabs';
 
 export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGame }) {
+  const { playClick, playSuccess, playWarp } = useSound();
   const [mode, setMode] = useState('menu'); // 'menu' | 'cli'
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -26,25 +29,33 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
   const cliInputRef = useRef(null);
   const cliOutputRef = useRef(null);
 
+  // Reusable Escape key hook
+  useEscapeKey(onClose, isOpen);
+
+  // Config-driven commands derived from single source of truth
+  const navigationItems = TABS.map(tab => ({
+    id: tab.id,
+    label: tab.id === 'home' ? 'Go to Landing Page (Home)' : `Go to ${tab.labelBottom || tab.title.split('|')[0].trim()} (${tab.labelTop})`,
+    icon: tab.icon,
+    action: () => {
+      playClick();
+      setActiveTab(tab.id);
+      onClose();
+    }
+  }));
+
   const COMMANDS = [
     {
       category: "Navigation",
-      items: [
-        { id: 'home', label: 'Go to Landing Page (Home)', icon: Sparkles, action: () => { soundEngine.playClick(); setActiveTab('home'); onClose(); } },
-        { id: 'projects', label: 'Go to Projects (I Build)', icon: Layers, action: () => { soundEngine.playClick(); setActiveTab('projects'); onClose(); } },
-        { id: 'experience', label: 'Go to Experience (I Work)', icon: Briefcase, action: () => { soundEngine.playClick(); setActiveTab('experience'); onClose(); } },
-        { id: 'arcade', label: 'Go to Arcade (I Play)', icon: Gamepad2, action: () => { soundEngine.playClick(); setActiveTab('arcade'); onClose(); } },
-        { id: 'achievements', label: 'Go to Achievements', icon: Award, action: () => { soundEngine.playClick(); setActiveTab('achievements'); onClose(); } },
-        { id: 'blogs', label: 'Go to Publications & Talks', icon: BookOpen, action: () => { soundEngine.playClick(); setActiveTab('blogs'); onClose(); } },
-      ]
+      items: navigationItems
     },
     {
       category: "Interactive Arcade",
       items: [
-        { id: 'math', label: 'Play Quick Math Challenge', icon: Sparkles, action: () => { soundEngine.playClick(); onOpenGame('quick-math'); onClose(); } },
-        { id: 'code', label: 'Play Code Review: Spot the Bug', icon: Terminal, action: () => { soundEngine.playClick(); onOpenGame('code-review'); onClose(); } },
-        { id: 'speedrun', label: 'Play Code Speedrun (Typing Test)', icon: Terminal, action: () => { soundEngine.playClick(); onOpenGame('speed-typer'); onClose(); } },
-        { id: 'memory', label: 'Play Neural Memory Matrix', icon: Sparkles, action: () => { soundEngine.playClick(); onOpenGame('memory-matrix'); onClose(); } },
+        { id: 'math', label: 'Play Quick Math Challenge', icon: Sparkles, action: () => { playClick(); onOpenGame('quick-math'); onClose(); } },
+        { id: 'code', label: 'Play Code Review: Spot the Bug', icon: Terminal, action: () => { playClick(); onOpenGame('code-review'); onClose(); } },
+        { id: 'speedrun', label: 'Play Code Speedrun (Typing Test)', icon: Terminal, action: () => { playClick(); onOpenGame('speed-typer'); onClose(); } },
+        { id: 'memory', label: 'Play Neural Memory Matrix', icon: Sparkles, action: () => { playClick(); onOpenGame('memory-matrix'); onClose(); } },
       ]
     },
     {
@@ -55,7 +66,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
           label: 'Copy Email Address (v.jhooria@gmail.com)', 
           icon: Copy, 
           action: () => {
-            soundEngine.playSuccess();
+            playSuccess();
             navigator.clipboard.writeText('v.jhooria@gmail.com');
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
@@ -65,13 +76,13 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
           id: 'github', 
           label: 'Open GitHub Profile (@Vivek19f)', 
           icon: FaGithub, 
-          action: () => { soundEngine.playClick(); window.open('https://github.com/Vivek19f', '_blank'); onClose(); } 
+          action: () => { playClick(); window.open('https://github.com/Vivek19f', '_blank'); onClose(); } 
         },
         { 
           id: 'linkedin', 
           label: 'Connect on LinkedIn', 
           icon: FaLinkedin, 
-          action: () => { soundEngine.playClick(); window.open('https://www.linkedin.com/in/vivekjhooria/', '_blank'); onClose(); } 
+          action: () => { playClick(); window.open('https://www.linkedin.com/in/vivekjhooria/', '_blank'); onClose(); } 
         },
       ]
     }
@@ -109,109 +120,28 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
     const cmd = cliInput.trim();
     if (!cmd) return;
 
-    soundEngine.playClick();
+    playClick();
     setEnteredCommands(prev => [...prev, cmd]);
     setHistoryIndex(-1);
 
-    const newEntries = [{ type: 'command', text: `$ ${cmd}` }];
-    const lower = cmd.toLowerCase();
-
-    if (lower === 'help') {
-      newEntries.push({
-        type: 'output',
-        text: `Available commands:
-  • whoami       : Staff Full Stack Engineer bio & overview
-  • stack        : Primary languages, frameworks & system tools
-  • contact      : Communication channels & email link
-  • bench        : Real-time browser environment & WebGL telemetry
-  • cat /resume  : Work history & leadership summary
-  • sky          : Open Celestial Stardate Observer (month/year selector)
-  • warp         : Trigger hyperspace starfield acceleration
-  • clear        : Clear console output history`
-      });
-    } else if (lower === 'whoami') {
-      newEntries.push({
-        type: 'output',
-        text: `VIVEK JHOORIA
-Title: Staff Full Stack Engineer (Frontend Architect & Distributed UI Systems)
-Focus: High-throughput telemetry, Micro-Frontends, real-time graph analytics, AST parsers.
-Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`
-      });
-    } else if (lower === 'stack') {
-      newEntries.push({
-        type: 'output',
-        text: `CORE TECHNOLOGY MATRIX:
-• Languages: TypeScript, Python, Node.js, Go, SQL
-• Frontend : React 19, Next.js, WebGL / Canvas, D3.js, Framer Motion
-• Systems  : Web Workers, Web Streams, SSE, WebSockets, Module Federation
-• Tools    : Vite, Docker, GitHub Actions, AWS, Tailwind CSS, Jest/Vitest`
-      });
-    } else if (lower === 'contact') {
-      newEntries.push({
-        type: 'output',
-        text: `GET IN TOUCH:
-• Email    : v.jhooria@gmail.com
-• GitHub   : https://github.com/Vivek19f
-• LinkedIn : https://www.linkedin.com/in/vivekjhooria/`
-      });
-    } else if (lower === 'bench') {
-      const dpr = window.devicePixelRatio || 1;
-      const mem = performance.memory ? `${Math.round(performance.memory.usedJSHeapSize / 1048576)} MB heap` : 'Protected';
-      newEntries.push({
-        type: 'output',
-        text: `CLIENT RUNTIME BENCHMARK:
-• Viewport : ${window.innerWidth} x ${window.innerHeight} (DPR ${dpr})
-• Renderer : WebGL 2.0 Canvas Starfield @ 60 FPS
-• Memory   : ${mem}
-• Latency  : < 16.6ms target frame budget`
-      });
-    } else if (lower === 'cat /resume') {
-      newEntries.push({
-        type: 'output',
-        text: `RESUME DIGEST:
-• Lead UI Architect (Cybersecurity Platform) - MITRE ATT&CK Matrix & TTP Analytics
-• Senior Software Engineer - Schema-Driven Ingestion Engine (50k rows/s)
-• Frontend Architect - Enterprise Micro-Frontend Migration (15+ codebases unified)
-• Publications: Technical blogs on distributed frontend state & real-time analytics`
-      });
-    } else if (lower === 'warp' || lower === 'matrix') {
-      soundEngine.playWarp();
-      newEntries.push({
-        type: 'success',
-        text: `[HYPERSPACE TRIGGERED] Engaging maximum particle warp velocity... 🚀`
-      });
-      // Fire custom event for starfield acceleration
-      window.dispatchEvent(new CustomEvent('starfield-warp'));
-    } else if (lower.startsWith('sky') || lower === 'stargazer' || lower === 'orbit') {
-      soundEngine.playSuccess();
-      newEntries.push({
-        type: 'success',
-        text: `[CELESTIAL STARDATE OBSERVER] Engaging stardate console. Rotating night sky... 🔭`
-      });
-      window.dispatchEvent(new CustomEvent('starfield-open-observer'));
-    } else if (lower === 'clear') {
+    const result = executeCliCommand(cmd, { playWarp, playSuccess });
+    if (result.clear) {
       setCliHistory([]);
       setCliInput('');
       return;
-    } else {
-      newEntries.push({
-        type: 'error',
-        text: `zsh: command not found: ${cmd}. Type 'help' for available commands.`
-      });
     }
 
-    setCliHistory(prev => [...prev, ...newEntries]);
+    setCliHistory(prev => [
+      ...prev,
+      { type: 'command', text: `$ ${cmd}` },
+      ...result.entries
+    ]);
     setCliInput('');
   };
 
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!isOpen) return;
-
-      if (e.key === 'Escape') {
-        onClose();
-        return;
-      }
 
       if (mode === 'menu') {
         if (e.key === 'ArrowDown') {
@@ -231,7 +161,7 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, mode, flatItems, selectedIndex, onClose]);
+  }, [isOpen, mode, flatItems, selectedIndex]);
 
   if (!isOpen) return null;
 
@@ -252,7 +182,7 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`
               <button
                 type="button"
                 onClick={() => {
-                  soundEngine.playClick();
+                  playClick();
                   setMode('menu');
                 }}
                 className={`mode-pill-btn ${mode === 'menu' ? 'active' : ''}`}
@@ -263,7 +193,7 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`
               <button
                 type="button"
                 onClick={() => {
-                  soundEngine.playClick();
+                  playClick();
                   setMode('cli');
                 }}
                 className={`mode-pill-btn ${mode === 'cli' ? 'active' : ''}`}
@@ -279,24 +209,26 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`
           {mode === 'menu' && (
             <>
               {/* Search bar */}
-              <div className="console-search-wrapper">
-                <Search size={18} className="console-terminal-icon text-accent" />
+              <div className="console-search-bar">
+                <Search size={18} className="console-search-icon" />
                 <input
                   ref={inputRef}
                   type="text"
                   value={search}
-                  onChange={e => { setSearch(e.target.value); setSelectedIndex(0); }}
-                  placeholder="Type a command or search tabs..."
-                  className="console-search-input font-mono"
+                  onChange={e => {
+                    setSearch(e.target.value);
+                    setSelectedIndex(0);
+                  }}
+                  placeholder="Type a command, page name or action..."
+                  className="console-input font-mono"
+                  autoFocus
                 />
+                {copied && (
+                  <span className="console-copied-badge font-mono">
+                    Copied!
+                  </span>
+                )}
               </div>
-
-              {/* Toast on copy */}
-              {copied && (
-                <div className="console-toast font-mono">
-                  <Check size={14} className="text-green-400" /> Copied v.jhooria@gmail.com to clipboard!
-                </div>
-              )}
 
               {/* Results list */}
               <div className="console-results custom-scrollbar">
