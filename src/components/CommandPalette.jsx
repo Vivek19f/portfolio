@@ -63,7 +63,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
       items: [
         {
           id: 'betelgeuse-supernova',
-          label: '💥 Betelgeuse Supernova Core Collapse (Easter Egg)',
+          label: 'Betelgeuse Supernova Core Collapse (Easter Egg)',
           icon: Sparkles,
           action: () => {
             playSupernova();
@@ -73,7 +73,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
         },
         {
           id: 'meteor-burst',
-          label: '☄️ Launch Seasonal Meteor Shower Burst',
+          label: 'Launch Seasonal Meteor Shower Burst',
           icon: Zap,
           action: () => {
             playMeteor();
@@ -83,7 +83,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
         },
         {
           id: 'open-sky',
-          label: '🔭 Open Celestial Stardate Observer',
+          label: 'Open Celestial Stardate Observer',
           icon: Compass,
           action: () => {
             playClick();
