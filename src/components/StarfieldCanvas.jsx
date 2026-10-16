@@ -134,7 +134,11 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
       const centerX = width / 2;
       const centerY = height / 2;
       const minDimension = Math.min(width, height);
-      const scale = Math.max(0.75, Math.min(1.05, width / 1440));
+      const isMobile = width < 768;
+      // Ambient scale: on mobile keep constellation bounds compact so they don't dominate the screen
+      const scale = isMobile 
+        ? Math.max(0.38, Math.min(0.52, width / 750)) 
+        : Math.max(0.7, Math.min(1.0, width / 1440));
 
       // -------------------------------------------------------------
       // 1. RENDER ROTATING BACKGROUND STARS
@@ -183,7 +187,7 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
       });
 
       // -------------------------------------------------------------
-      // 2. RENDER SEASONAL CONSTELLATIONS
+      // 2. RENDER SEASONAL CONSTELLATIONS (Ambient Celestial Backdrop)
       // -------------------------------------------------------------
       CELESTIAL_CONSTELLATIONS.forEach((c) => {
         const apparentAngle = normalizeApparentAngle(c.baseAngle, currentSkyAngle);
@@ -203,9 +207,9 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
           parallaxY,
         });
 
-        // Mouse proximity check
+        // Mouse proximity check (desktop only interaction)
         const distToMouse = Math.hypot(mouseX - anchorX, mouseY - anchorY);
-        const targetHover = distToMouse < 260 ? Math.max(0, 1 - distToMouse / 260) : 0;
+        const targetHover = (!isMobile && distToMouse < 260) ? Math.max(0, 1 - distToMouse / 260) : 0;
         const currentHover = (constellationHoverStates[c.id] =
           (constellationHoverStates[c.id] || 0) + (targetHover - (constellationHoverStates[c.id] || 0)) * 0.08);
 
@@ -217,37 +221,51 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
           return { ...s, sx, sy, pulse };
         });
 
-        // A. Draw connecting lines
-        const baseLineAlpha = (0.42 + Math.sin(tick * 0.025 + c.baseAngle) * 0.06) * visibilityFactor;
-        const lineAlpha = isWarping ? 0.05 : Math.min(0.92, baseLineAlpha + currentHover * 0.4);
+        // A. Draw subtle connecting lines (Ethereal backdrop threads)
+        const baseLineAlpha = (isMobile 
+          ? 0.08 + Math.sin(tick * 0.025 + c.baseAngle) * 0.02
+          : 0.16 + Math.sin(tick * 0.025 + c.baseAngle) * 0.03
+        ) * visibilityFactor;
+
+        const lineAlpha = isWarping 
+          ? 0.02 
+          : Math.min(isMobile ? 0.16 : 0.35, baseLineAlpha + currentHover * 0.22);
 
         c.edges.forEach(([fromIdx, toIdx]) => {
           const from = starPositions[fromIdx];
           const to = starPositions[toIdx];
           if (!from || !to) return;
 
-          // Outer glowing halo line
-          ctx.beginPath();
-          ctx.moveTo(from.sx, from.sy);
-          ctx.lineTo(to.sx, to.sy);
-          ctx.strokeStyle = '#00f0ff';
-          ctx.lineWidth = 3.2;
-          ctx.globalAlpha = lineAlpha * 0.35;
-          ctx.stroke();
+          // Outer glowing halo line (desktop only for depth)
+          if (!isMobile) {
+            ctx.beginPath();
+            ctx.moveTo(from.sx, from.sy);
+            ctx.lineTo(to.sx, to.sy);
+            ctx.strokeStyle = '#00f0ff';
+            ctx.lineWidth = 1.6;
+            ctx.globalAlpha = lineAlpha * 0.22;
+            ctx.stroke();
+          }
 
-          // Core bright vector line
+          // Core delicate vector line
           ctx.beginPath();
           ctx.moveTo(from.sx, from.sy);
           ctx.lineTo(to.sx, to.sy);
-          ctx.strokeStyle = '#38bdf8';
-          ctx.lineWidth = 1.4 + currentHover * 0.8;
+          ctx.strokeStyle = isMobile ? 'rgba(56, 189, 248, 0.5)' : '#38bdf8';
+          ctx.lineWidth = isMobile ? 0.75 : 0.95 + currentHover * 0.35;
           ctx.globalAlpha = lineAlpha;
           ctx.stroke();
         });
 
-        // B. Draw constellation stars
+        // B. Draw constellation stars (Seamlessly blended into celestial dome)
         starPositions.forEach((s, sIdx) => {
-          const starAlpha = Math.max(0.4, Math.min(1, (0.95 + s.pulse * 0.3 + currentHover * 0.2) * visibilityFactor));
+          const starAlpha = Math.max(
+            0.12,
+            Math.min(
+              isMobile ? 0.44 : 0.68,
+              ((isMobile ? 0.36 : 0.56) + s.pulse * 0.12 + currentHover * 0.25) * visibilityFactor
+            )
+          );
 
           if (isWarping && warpFactor > 3) {
             ctx.beginPath();
@@ -258,33 +276,33 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
             ctx.globalAlpha = 0.8;
             ctx.stroke();
           } else {
-            // Radiant outer aura
+            // Soft outer aura
             ctx.beginPath();
-            ctx.arc(s.sx, s.sy, s.r * (2.8 + currentHover * 1.5), 0, Math.PI * 2);
+            ctx.arc(s.sx, s.sy, s.r * (isMobile ? 1.3 : 1.7 + currentHover * 0.6), 0, Math.PI * 2);
             ctx.fillStyle = s.color;
-            ctx.globalAlpha = (0.35 + currentHover * 0.3) * starAlpha;
+            ctx.globalAlpha = (isMobile ? 0.08 : 0.15 + currentHover * 0.12) * starAlpha;
             ctx.fill();
 
             // Inner glowing node
             ctx.beginPath();
-            ctx.arc(s.sx, s.sy, s.r * (1.3 + currentHover * 0.25), 0, Math.PI * 2);
+            ctx.arc(s.sx, s.sy, s.r * (isMobile ? 0.85 : 1.05 + currentHover * 0.2), 0, Math.PI * 2);
             ctx.fillStyle = s.color;
-            ctx.globalAlpha = starAlpha;
+            ctx.globalAlpha = starAlpha * (isMobile ? 0.65 : 0.82);
             ctx.fill();
 
-            // Diamond pinpoint center
+            // Diamond pinpoint center: soft celestial white
             ctx.beginPath();
-            ctx.arc(s.sx, s.sy, Math.max(1.0, s.r * 0.5), 0, Math.PI * 2);
+            ctx.arc(s.sx, s.sy, Math.max(0.6, s.r * 0.4), 0, Math.PI * 2);
             ctx.fillStyle = '#ffffff';
-            ctx.globalAlpha = 0.98 * visibilityFactor;
+            ctx.globalAlpha = (isMobile ? 0.4 : 0.65) * visibilityFactor;
             ctx.fill();
 
-            // Lens flare cross spike on key primary stars
-            if (sIdx === c.keyStarIdx) {
-              const spikeLen = (s.r * 2.8 + currentHover * 3.5);
-              const spikeAlpha = (0.45 + currentHover * 0.4) * starAlpha;
+            // Lens flare cross spike on key primary stars (desktop hover only)
+            if (!isMobile && sIdx === c.keyStarIdx && currentHover > 0.06) {
+              const spikeLen = s.r * 1.8 + currentHover * 2.2;
+              const spikeAlpha = 0.25 * currentHover * starAlpha;
               ctx.strokeStyle = '#00f0ff';
-              ctx.lineWidth = 1;
+              ctx.lineWidth = 0.8;
               ctx.globalAlpha = spikeAlpha;
 
               ctx.beginPath();
@@ -297,9 +315,9 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
           }
         });
 
-        // C. Sci-Fi Constellation HUD Telemetry
-        if (!isWarping && visibilityFactor > 0.15) {
-          const hudAlpha = Math.min(0.95, (0.32 + currentHover * 0.65) * visibilityFactor);
+        // C. Sci-Fi Constellation HUD Telemetry (Desktop hover only - hidden on mobile to avoid text clutter)
+        if (!isMobile && !isWarping && visibilityFactor > 0.2 && currentHover > 0.06) {
+          const hudAlpha = Math.min(0.75, currentHover * 0.85 * visibilityFactor);
           ctx.save();
           ctx.globalAlpha = hudAlpha;
           ctx.font = '600 11px "JetBrains Mono", monospace';
