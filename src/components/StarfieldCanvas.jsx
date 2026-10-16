@@ -14,44 +14,15 @@ import {
 } from '../utils/celestialMath';
 import { soundEngine } from '../utils/soundEngine';
 
-import { calculateLunarStatus } from '../data/lunarCatalog';
-
 export { CELESTIAL_CONSTELLATIONS };
 
-export default function StarfieldCanvas({ 
-  month = 9, 
-  year = 2026, 
-  day = 15,
-  isAutoOrbit = false,
-  isSolarEclipse = false,
-  isBloodMoon = false,
-  specialLunarType = null,
-  lunarStatus = null
-}) {
+export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = false }) {
   const canvasRef = useRef(null);
-  const stateRef = useRef({ 
-    month, 
-    year, 
-    day, 
-    isAutoOrbit, 
-    isSolarEclipse, 
-    isBloodMoon, 
-    specialLunarType,
-    lunarStatus 
-  });
+  const stateRef = useRef({ month, year, isAutoOrbit });
 
   useEffect(() => {
-    stateRef.current = { 
-      month, 
-      year, 
-      day, 
-      isAutoOrbit, 
-      isSolarEclipse, 
-      isBloodMoon, 
-      specialLunarType,
-      lunarStatus 
-    };
-  }, [month, year, day, isAutoOrbit, isSolarEclipse, isBloodMoon, specialLunarType, lunarStatus]);
+    stateRef.current = { month, year, isAutoOrbit };
+  }, [month, year, isAutoOrbit]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -76,8 +47,7 @@ export default function StarfieldCanvas({
     let currentSkyAngle = calculateDesiredSkyAngle(stateRef.current.month, stateRef.current.year);
     let autoOrbitAccumulator = 0;
 
-    // Hover states for constellations, deep-sky objects, and the Moon
-    let moonHoverState = 0;
+    // Hover states for constellations and deep-sky objects
     const constellationHoverStates = {};
     CELESTIAL_CONSTELLATIONS.forEach((c) => {
       constellationHoverStates[c.id] = 0;
@@ -218,12 +188,6 @@ export default function StarfieldCanvas({
         if (dist <= target.radius + 15) {
           if (target.id === 'betelgeuse') {
             triggerSupernova(target.x, target.y);
-            return;
-          }
-
-          if (target.type === 'moon') {
-            soundEngine.playSuccess();
-            window.dispatchEvent(new CustomEvent('celestial-cycle-lunar-event'));
             return;
           }
 
@@ -530,261 +494,6 @@ export default function StarfieldCanvas({
           ctx.restore();
         }
       });
-
-      // -------------------------------------------------------------
-      // 2.5 RENDER LUNAR BODY (MOON, CORONAL ECLIPSE & LUNAR PHASES)
-      // -------------------------------------------------------------
-      const activeDay = stateRef.current.day || 15;
-      const lunar = stateRef.current.lunarStatus || calculateLunarStatus(
-        targetYear,
-        targetMonth,
-        activeDay,
-        {
-          isSolarEclipse: stateRef.current.isSolarEclipse,
-          isBloodMoon: stateRef.current.isBloodMoon,
-          specialType: stateRef.current.specialLunarType,
-        }
-      );
-
-      // Moon position in upper sky dome (orbits across the sky)
-      const moonOrbitAngle = ((activeDay / 29.53) * Math.PI * 2 + currentSkyAngle * 0.35 + 1.1) % (Math.PI * 2);
-      const moonDistX = width * 0.36;
-      const moonDistY = height * 0.30;
-      const moonX = centerX + Math.cos(moonOrbitAngle) * moonDistX - parallaxX * 0.4;
-      const moonY = centerY + Math.sin(moonOrbitAngle) * moonDistY - parallaxY * 0.4;
-
-      const baseMoonRadius = (isMobile ? 18 : 26) * (lunar.scaleMultiplier || 1);
-
-      // Proximity check for hover
-      const distToMoon = Math.hypot(mouseX - moonX, mouseY - moonY);
-      const targetMoonHover = !isMobile && distToMoon < baseMoonRadius + 35 ? 1 : 0;
-      moonHoverState += (targetMoonHover - moonHoverState) * 0.1;
-
-      // Register interactive target
-      interactiveTargets.push({
-        id: 'moon',
-        type: 'moon',
-        x: moonX,
-        y: moonY,
-        radius: baseMoonRadius + 14,
-        lunar,
-      });
-
-      ctx.save();
-
-      // CASE A: TOTAL SOLAR ECLIPSE MODE
-      if (lunar.isSolar) {
-        // Deep space ambient darkening in eclipse
-        ctx.fillStyle = 'rgba(2, 4, 10, 0.5)';
-        ctx.fillRect(0, 0, width, height);
-
-        // 1. Incandescent Solar Corona Gradient Ring
-        const coronaGrad = ctx.createRadialGradient(
-          moonX,
-          moonY,
-          baseMoonRadius * 0.85,
-          moonX,
-          moonY,
-          baseMoonRadius * 4.4
-        );
-        coronaGrad.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
-        coronaGrad.addColorStop(0.12, 'rgba(254, 240, 138, 0.88)');
-        coronaGrad.addColorStop(0.35, 'rgba(234, 179, 8, 0.55)');
-        coronaGrad.addColorStop(0.7, 'rgba(245, 158, 11, 0.18)');
-        coronaGrad.addColorStop(1, 'transparent');
-
-        ctx.beginPath();
-        ctx.arc(moonX, moonY, baseMoonRadius * 4.4, 0, Math.PI * 2);
-        ctx.fillStyle = coronaGrad;
-        ctx.fill();
-
-        // 2. Coronal Streamer Rays
-        const numStreamers = 16;
-        for (let i = 0; i < numStreamers; i++) {
-          const rayAngle = (i / numStreamers) * Math.PI * 2 + tick * 0.003;
-          const rayLength = baseMoonRadius * (2.2 + Math.sin(tick * 0.04 + i * 1.3) * 0.7);
-
-          const rayX = moonX + Math.cos(rayAngle) * rayLength;
-          const rayY = moonY + Math.sin(rayAngle) * rayLength;
-
-          const rayGrad = ctx.createLinearGradient(moonX, moonY, rayX, rayY);
-          rayGrad.addColorStop(0, 'rgba(255, 255, 255, 0.7)');
-          rayGrad.addColorStop(0.4, 'rgba(250, 204, 21, 0.4)');
-          rayGrad.addColorStop(1, 'transparent');
-
-          ctx.beginPath();
-          ctx.moveTo(
-            moonX + Math.cos(rayAngle - 0.08) * baseMoonRadius,
-            moonY + Math.sin(rayAngle - 0.08) * baseMoonRadius
-          );
-          ctx.lineTo(rayX, rayY);
-          ctx.lineTo(
-            moonX + Math.cos(rayAngle + 0.08) * baseMoonRadius,
-            moonY + Math.sin(rayAngle + 0.08) * baseMoonRadius
-          );
-          ctx.fillStyle = rayGrad;
-          ctx.fill();
-        }
-
-        // 3. Pitch-Black Occulting Moon Body
-        ctx.beginPath();
-        ctx.arc(moonX, moonY, baseMoonRadius, 0, Math.PI * 2);
-        ctx.fillStyle = '#04060c';
-        ctx.fill();
-
-        // 4. Diamond Ring Flare Peak
-        const diamondAngle = -Math.PI / 4;
-        const dX = moonX + Math.cos(diamondAngle) * (baseMoonRadius * 0.98);
-        const dY = moonY + Math.sin(diamondAngle) * (baseMoonRadius * 0.98);
-
-        const dGrad = ctx.createRadialGradient(dX, dY, 1, dX, dY, 20);
-        dGrad.addColorStop(0, '#ffffff');
-        dGrad.addColorStop(0.3, 'rgba(254, 240, 138, 0.95)');
-        dGrad.addColorStop(1, 'transparent');
-
-        ctx.beginPath();
-        ctx.arc(dX, dY, 20, 0, Math.PI * 2);
-        ctx.fillStyle = dGrad;
-        ctx.fill();
-      } else {
-        // CASE B: STANDARD & SPECIAL FULL MOONS (BLOOD, HARVEST, BLUE, SUPERMOON)
-        // 1. Atmospheric Ambient Halo
-        const haloGrad = ctx.createRadialGradient(
-          moonX,
-          moonY,
-          baseMoonRadius * 0.8,
-          moonX,
-          moonY,
-          baseMoonRadius * (lunar.type === 'supermoon' ? 3.4 : 2.5)
-        );
-        haloGrad.addColorStop(0, lunar.theme.moonGlow || 'rgba(0, 240, 255, 0.3)');
-        haloGrad.addColorStop(1, 'transparent');
-
-        ctx.beginPath();
-        ctx.arc(moonX, moonY, baseMoonRadius * 3.4, 0, Math.PI * 2);
-        ctx.fillStyle = haloGrad;
-        ctx.fill();
-
-        // 2. Dark Unlit Moon Base (Earthshine)
-        ctx.beginPath();
-        ctx.arc(moonX, moonY, baseMoonRadius, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(8, 14, 28, 0.88)';
-        ctx.fill();
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        // 3. Illuminated Phase Geometry
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(moonX, moonY, baseMoonRadius, 0, Math.PI * 2);
-        ctx.clip();
-
-        const phase = lunar.phaseFraction; // 0.0 to 1.0
-
-        ctx.beginPath();
-        if (phase >= 0.5) {
-          // Waning: Left hemisphere lit
-          ctx.arc(moonX, moonY, baseMoonRadius, Math.PI * 0.5, Math.PI * 1.5, false);
-          const termXScale = Math.cos(phase * 2 * Math.PI);
-          ctx.ellipse(
-            moonX,
-            moonY,
-            Math.abs(termXScale) * baseMoonRadius,
-            baseMoonRadius,
-            0,
-            Math.PI * 1.5,
-            Math.PI * 0.5,
-            termXScale > 0
-          );
-        } else {
-          // Waxing: Right hemisphere lit
-          ctx.arc(moonX, moonY, baseMoonRadius, Math.PI * 1.5, Math.PI * 0.5, false);
-          const termXScale = Math.cos(phase * 2 * Math.PI);
-          ctx.ellipse(
-            moonX,
-            moonY,
-            Math.abs(termXScale) * baseMoonRadius,
-            baseMoonRadius,
-            0,
-            Math.PI * 0.5,
-            Math.PI * 1.5,
-            termXScale < 0
-          );
-        }
-        ctx.closePath();
-
-        // Lunar surface gradient
-        const surfGrad = ctx.createRadialGradient(
-          moonX - baseMoonRadius * 0.3,
-          moonY - baseMoonRadius * 0.3,
-          2,
-          moonX,
-          moonY,
-          baseMoonRadius * 1.15
-        );
-        surfGrad.addColorStop(0, '#ffffff');
-        surfGrad.addColorStop(0.38, lunar.theme.moonColor);
-        surfGrad.addColorStop(1, lunar.type === 'bloodMoon' ? '#7f1d1d' : '#1e293b');
-
-        ctx.fillStyle = surfGrad;
-        ctx.fill();
-
-        // Maria craters
-        const craters = [
-          { dx: -0.25, dy: -0.2, r: 0.16 },
-          { dx: 0.1, dy: -0.35, r: 0.22 },
-          { dx: -0.1, dy: 0.15, r: 0.28 },
-          { dx: 0.25, dy: 0.25, r: 0.14 },
-        ];
-        craters.forEach((c) => {
-          ctx.beginPath();
-          ctx.arc(
-            moonX + c.dx * baseMoonRadius,
-            moonY + c.dy * baseMoonRadius,
-            c.r * baseMoonRadius,
-            0,
-            Math.PI * 2
-          );
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.14)';
-          ctx.fill();
-        });
-
-        ctx.restore();
-      }
-
-      ctx.restore();
-
-      // Sci-Fi Lunar Telemetry HUD (Desktop hover)
-      if (!isMobile && moonHoverState > 0.08) {
-        ctx.save();
-        ctx.globalAlpha = Math.min(1, moonHoverState * 0.95);
-        ctx.font = '600 11px "JetBrains Mono", monospace';
-        ctx.fillStyle = lunar.theme.accent;
-
-        const hudX = moonX - 65;
-        const hudY = moonY - baseMoonRadius - 26;
-
-        ctx.fillText(`✦ ${lunar.title}`, hudX, hudY);
-
-        ctx.font = '400 9px "JetBrains Mono", monospace';
-        ctx.fillStyle = 'rgba(241, 245, 249, 0.78)';
-        ctx.fillText(
-          `${lunar.phaseName} • ${lunar.illumination}% Lit • Day ${activeDay}`,
-          hudX,
-          hudY + 13
-        );
-
-        ctx.beginPath();
-        ctx.moveTo(hudX - 6, hudY - 11);
-        ctx.lineTo(hudX - 6, hudY + 16);
-        ctx.lineTo(hudX + 2, hudY + 16);
-        ctx.strokeStyle = lunar.theme.accent;
-        ctx.lineWidth = 1;
-        ctx.stroke();
-
-        ctx.restore();
-      }
 
       // -------------------------------------------------------------
       // 3. RENDER SEASONAL CONSTELLATIONS & BETELGEUSE

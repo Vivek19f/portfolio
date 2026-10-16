@@ -9,7 +9,6 @@ export default function Header({
   onOpenConsole,
   skyMonth = 9,
   skyYear = 2026,
-  lunarStatus,
   onToggleCelestial
 }) {
   const { isSoundOn, toggleSound, playClick, playTabSwitch, playModalOpen } = useSound();
@@ -77,15 +76,10 @@ export default function Header({
               onToggleCelestial?.();
             }}
             aria-label="Open celestial stardate observer"
-            title={`${lunarStatus?.title || 'Celestial Observer'} • Click to adjust Month, Year, Moon Phase & Eclipses`}
+            title="Adjust starfield Month & Year"
             className="header-action-btn celestial-header-btn group"
           >
             <Compass size={15} className="text-accent group-hover:rotate-45 transition-transform" />
-            {lunarStatus?.phaseIcon && (
-              <span className="lunar-mini-icon text-xs" aria-hidden="true">
-                {lunarStatus.phaseIcon}
-              </span>
-            )}
             <span className="header-btn-text font-mono text-xs text-secondary group-hover:text-white">
               {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][skyMonth]} '{String(skyYear).slice(-2)}
             </span>

@@ -12,86 +12,17 @@ import CelestialEventToast from './components/CelestialEventToast';
 
 import { TABS, getTabTitle } from './data/tabs';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
-import { calculateLunarStatus, applyLunarTheme } from './data/lunarCatalog';
 
 function App() {
   const [activeTab, setActiveTab] = useState('home'); // Landing page opens on Home in single view
   const [isConsoleOpen, setIsConsoleOpen] = useState(false);
   const [activeGame, setActiveGame] = useState(null);
 
-  // Celestial Starfield Stardate Epoch (Month: 0-11, Year, Day: 1-31)
+  // Celestial Starfield Stardate Epoch (Month: 0-11, Year)
   const [skyMonth, setSkyMonth] = useState(9); // October
   const [skyYear, setSkyYear] = useState(2026);
-  const [skyDay, setSkyDay] = useState(15);
   const [isAutoOrbit, setIsAutoOrbit] = useState(false);
   const [isCelestialOpen, setIsCelestialOpen] = useState(false);
-
-  // Special Lunar Events & Eclipses
-  const [isSolarEclipse, setIsSolarEclipse] = useState(false);
-  const [isBloodMoon, setIsBloodMoon] = useState(false);
-  const [specialLunarType, setSpecialLunarType] = useState(null);
-
-  // Calculate real-time lunar status
-  const lunarStatus = calculateLunarStatus(skyYear, skyMonth, skyDay, {
-    isSolarEclipse,
-    isBloodMoon,
-    specialType: specialLunarType,
-  });
-
-  // Dynamically update site theme colors as per the moon's celestial hue
-  useEffect(() => {
-    applyLunarTheme(lunarStatus.theme);
-  }, [lunarStatus.theme]);
-
-  // Global listener for lunar mode and cycle triggers
-  useEffect(() => {
-    const handleSetLunarMode = (e) => {
-      const mode = e.detail?.mode;
-      if (mode === 'solarEclipse') {
-        setIsSolarEclipse(true);
-        setIsBloodMoon(false);
-        setSpecialLunarType('solarEclipse');
-      } else if (mode === 'bloodMoon') {
-        setIsSolarEclipse(false);
-        setIsBloodMoon(true);
-        setSpecialLunarType('bloodMoon');
-      } else if (mode === 'reset') {
-        setIsSolarEclipse(false);
-        setIsBloodMoon(false);
-        setSpecialLunarType(null);
-      } else if (mode) {
-        setIsSolarEclipse(false);
-        setIsBloodMoon(false);
-        setSpecialLunarType(mode);
-      }
-    };
-
-    const handleCycleLunar = () => {
-      const modes = [null, 'bloodMoon', 'solarEclipse', 'harvestMoon', 'blueMoon', 'supermoon'];
-      setSpecialLunarType((current) => {
-        const nextIdx = (modes.indexOf(current) + 1) % modes.length;
-        const nextMode = modes[nextIdx];
-        if (nextMode === 'solarEclipse') {
-          setIsSolarEclipse(true);
-          setIsBloodMoon(false);
-        } else if (nextMode === 'bloodMoon') {
-          setIsSolarEclipse(false);
-          setIsBloodMoon(true);
-        } else {
-          setIsSolarEclipse(false);
-          setIsBloodMoon(false);
-        }
-        return nextMode;
-      });
-    };
-
-    window.addEventListener('celestial-set-lunar-mode', handleSetLunarMode);
-    window.addEventListener('celestial-cycle-lunar-event', handleCycleLunar);
-    return () => {
-      window.removeEventListener('celestial-set-lunar-mode', handleSetLunarMode);
-      window.removeEventListener('celestial-cycle-lunar-event', handleCycleLunar);
-    };
-  }, []);
 
   // Sync document title with active tab config
   useEffect(() => {
@@ -125,17 +56,12 @@ function App() {
   const isSingleView = activeTab === 'home';
 
   return (
-    <div className={`portfolio-app-root ${isSingleView ? 'single-view-layout' : ''} ${lunarStatus.isSolar ? 'solar-eclipse-active' : ''}`}>
-      {/* Interactive WebGL Starfield, Ambient Nebula & Dynamic Lunar Body */}
+    <div className={`portfolio-app-root ${isSingleView ? 'single-view-layout' : ''}`}>
+      {/* Interactive WebGL Starfield and Ambient Nebula */}
       <StarfieldCanvas 
         month={skyMonth} 
         year={skyYear} 
-        day={skyDay}
         isAutoOrbit={isAutoOrbit} 
-        isSolarEclipse={isSolarEclipse}
-        isBloodMoon={isBloodMoon}
-        specialLunarType={specialLunarType}
-        lunarStatus={lunarStatus}
       />
 
       {/* Main UI Overlay */}
@@ -147,7 +73,6 @@ function App() {
           onOpenConsole={() => setIsConsoleOpen(true)}
           skyMonth={skyMonth}
           skyYear={skyYear}
-          lunarStatus={lunarStatus}
           onToggleCelestial={() => setIsCelestialOpen((prev) => !prev)}
         />
 
@@ -183,21 +108,12 @@ function App() {
         <MobileNav activeTab={activeTab} setActiveTab={setActiveTab} />
       </div>
 
-      {/* Interactive Stardate, Constellation & Lunar Eclipse Observer HUD */}
+      {/* Interactive Stardate & Constellation Observer HUD */}
       <CelestialController
         month={skyMonth}
         setMonth={setSkyMonth}
         year={skyYear}
         setYear={setSkyYear}
-        day={skyDay}
-        setDay={setSkyDay}
-        isSolarEclipse={isSolarEclipse}
-        setIsSolarEclipse={setIsSolarEclipse}
-        isBloodMoon={isBloodMoon}
-        setIsBloodMoon={setIsBloodMoon}
-        specialLunarType={specialLunarType}
-        setSpecialLunarType={setSpecialLunarType}
-        lunarStatus={lunarStatus}
         isAutoOrbit={isAutoOrbit}
         setIsAutoOrbit={setIsAutoOrbit}
         isOpen={isCelestialOpen}

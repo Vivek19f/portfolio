@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Terminal, Search, Copy, CornerDownLeft, Sparkles, Compass, Zap, Sun, Moon
+  Terminal, Search, Copy, CornerDownLeft, Sparkles, Compass, Zap
 } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { useEscapeKey } from '../hooks/useEscapeKey';
@@ -59,38 +59,8 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
       ]
     },
     {
-      category: "Celestial & Lunar Modes",
+      category: "Celestial & Easter Egg Events",
       items: [
-        {
-          id: 'solar-eclipse',
-          label: '🌑 Total Solar Eclipse Mode (Coronal Flare Ring & Twilight)',
-          icon: Sun,
-          action: () => {
-            playSuccess();
-            window.dispatchEvent(new CustomEvent('celestial-set-lunar-mode', { detail: { mode: 'solarEclipse' } }));
-            onClose();
-          }
-        },
-        {
-          id: 'blood-moon',
-          label: '🩸 Blood Moon (Total Lunar Eclipse & Crimson Theme)',
-          icon: Moon,
-          action: () => {
-            playSuccess();
-            window.dispatchEvent(new CustomEvent('celestial-set-lunar-mode', { detail: { mode: 'bloodMoon' } }));
-            onClose();
-          }
-        },
-        {
-          id: 'supermoon',
-          label: '🌕 Perigee Supermoon (+14% Size, Radiant Silver-Cyan)',
-          icon: Moon,
-          action: () => {
-            playSuccess();
-            window.dispatchEvent(new CustomEvent('celestial-set-lunar-mode', { detail: { mode: 'supermoon' } }));
-            onClose();
-          }
-        },
         {
           id: 'betelgeuse-supernova',
           label: '💥 Betelgeuse Supernova Core Collapse (Easter Egg)',
