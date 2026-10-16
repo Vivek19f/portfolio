@@ -80,7 +80,7 @@ export default function Header({
             className="header-action-btn celestial-header-btn group"
           >
             <Compass size={15} className="text-accent group-hover:rotate-45 transition-transform" />
-            <span className="font-mono text-xs hidden lg:inline text-secondary group-hover:text-white">
+            <span className="header-btn-text font-mono text-xs text-secondary group-hover:text-white">
               {['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][skyMonth]} '{String(skyYear).slice(-2)}
             </span>
           </button>
@@ -108,10 +108,11 @@ export default function Header({
               onOpenConsole();
             }}
             aria-label="Open command palette"
+            title="Open Command Palette (⌘K)"
             className="header-action-btn terminal-trigger-btn"
           >
             <Terminal size={15} />
-            <span className="font-mono text-xs hidden md:inline">⌘K</span>
+            <span className="header-btn-text font-mono text-xs">⌘K</span>
           </button>
 
           {/* Resume Button */}
@@ -121,9 +122,10 @@ export default function Header({
             rel="noopener noreferrer"
             onClick={() => playClick()}
             className="resume-pill-btn group"
+            title="View Resume / CV"
           >
             <ArrowDown size={15} className="resume-icon group-hover:text-accent" />
-            <span>Resume</span>
+            <span className="resume-btn-text">Resume</span>
           </a>
         </div>
       </nav>

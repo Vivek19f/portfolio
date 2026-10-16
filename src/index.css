@@ -291,7 +291,7 @@ button {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 
 .header-action-btn {
@@ -299,15 +299,15 @@ button {
   align-items: center;
   justify-content: center;
   gap: 8px;
-  min-height: 40px;
-  min-width: 40px;
+  min-height: 38px;
+  min-width: 38px;
   padding: 0 14px;
   border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   color: var(--text-secondary);
   font-size: 0.8rem;
   transition: all 0.25s ease;
-  background: rgba(22, 22, 28, 0.3);
+  background: rgba(22, 22, 28, 0.4);
 }
 
 .header-action-btn:hover {
@@ -316,24 +316,79 @@ button {
   box-shadow: 0 0 15px -3px var(--accent-glow);
 }
 
+.header-btn-text {
+  display: inline;
+}
+
 .resume-pill-btn {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 18px;
+  min-height: 38px;
+  padding: 0 16px;
   border-radius: 9999px;
   border: 1px solid rgba(255, 255, 255, 0.14);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
   font-weight: 500;
   color: var(--text-main);
-  background: rgba(22, 22, 28, 0.3);
-  transition: all 0.3s ease;
+  background: rgba(22, 22, 28, 0.4);
+  transition: all 0.25s ease;
 }
 
 .resume-pill-btn:hover {
   border-color: var(--accent);
   color: var(--accent);
   box-shadow: 0 0 20px -5px var(--accent-glow);
+}
+
+.resume-btn-text {
+  display: inline;
+}
+
+/* Responsive Header Decluttering */
+@media (max-width: 900px) {
+  .header-btn-text {
+    display: none;
+  }
+  .header-action-btn {
+    padding: 0;
+    width: 38px;
+    height: 38px;
+  }
+}
+
+@media (max-width: 640px) {
+  .header-nav-container {
+    padding: 12px 16px;
+  }
+  .brand-logo {
+    font-size: 1.25rem;
+  }
+  .header-actions {
+    gap: 7px;
+  }
+  .header-action-btn {
+    min-height: 36px;
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+  }
+  .resume-pill-btn {
+    min-height: 36px;
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+  }
+  .resume-btn-text {
+    display: none;
+  }
+  /* On compact mobile, hide terminal shortcut since mobile users navigate via touch dock */
+  .terminal-trigger-btn {
+    display: none;
+  }
 }
 
 /* ---------------- PROJECTS PAGE ---------------- */
@@ -3164,97 +3219,23 @@ button {
   }
 }
 
-/* ---------------- CELESTIAL STARDATE OBSERVER HUD ---------------- */
-.celestial-controller-root {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 45;
+/* ---------------- CELESTIAL STARDATE OBSERVER MODAL ---------------- */
+.celestial-backdrop {
+  z-index: 60;
 }
 
-@media (max-width: 768px) {
-  .celestial-controller-root {
-    bottom: calc(76px + env(safe-area-inset-bottom));
-    right: 14px;
-  }
-}
-
-.celestial-dock-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px 14px;
-  border-radius: 9999px;
-  background: rgba(13, 20, 36, 0.85);
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.6), 0 0 12px rgba(0, 240, 255, 0.15);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  user-select: none;
-}
-
-.celestial-dock-pill:hover {
-  background: rgba(18, 28, 52, 0.95);
-  border-color: rgba(0, 240, 255, 0.5);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.7), 0 0 18px rgba(0, 240, 255, 0.25);
-  transform: translateY(-2px);
-}
-
-.celestial-dock-pill.active-open {
-  border-color: var(--accent);
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
-}
-
-.celestial-season-badge {
-  padding: 2px 7px;
-  border-radius: 6px;
-  background: rgba(0, 240, 255, 0.1);
-  border: 1px solid rgba(0, 240, 255, 0.2);
-  color: var(--accent);
-}
-
-.celestial-pill-arrow-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-secondary);
-  transition: all 0.15s;
-}
-
-.celestial-pill-arrow-btn:hover {
-  background: var(--accent);
-  color: #070a12;
-}
-
-.celestial-pill-toggle-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--accent);
-  margin-left: 2px;
-}
-
-/* Expanded Modal / Drawer */
-.celestial-drawer-panel {
-  position: absolute;
-  bottom: calc(100% + 12px);
-  right: 0;
-  width: 360px;
-  max-width: calc(100vw - 28px);
-  padding: 18px;
-  border-radius: 18px;
-  background: rgba(10, 16, 30, 0.94);
-  border: 1px solid rgba(0, 240, 255, 0.3);
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(0, 240, 255, 0.18);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  z-index: 50;
+.celestial-modal-panel {
+  width: 100%;
+  max-width: 420px;
+  max-height: 90vh;
+  padding: 22px;
+  border-radius: 20px;
+  background: rgba(10, 16, 30, 0.96);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.85), 0 0 35px rgba(0, 240, 255, 0.2);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  overflow-y: auto;
 }
 
 .celestial-drawer-header {
