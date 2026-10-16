@@ -103,6 +103,7 @@ export default function CelestialController({
 
   const handleTriggerMeteorBurst = () => {
     playMeteor();
+    setIsOpen(false);
     window.dispatchEvent(new CustomEvent('starfield-meteor-burst'));
   };
 

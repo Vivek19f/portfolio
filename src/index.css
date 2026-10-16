@@ -3222,6 +3222,24 @@ button {
 /* ---------------- CELESTIAL STARDATE OBSERVER MODAL ---------------- */
 .celestial-backdrop {
   z-index: 60;
+  background: rgba(4, 7, 15, 0.55);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.supernova-fullscreen-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  pointer-events: none;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.96) 0%, rgba(0, 240, 255, 0.75) 32%, rgba(245, 158, 11, 0.45) 65%, transparent 100%);
+  animation: supernova-flash-fade 0.95s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes supernova-flash-fade {
+  0% { opacity: 1; transform: scale(0.96); }
+  25% { opacity: 0.9; transform: scale(1.02); }
+  100% { opacity: 0; transform: scale(1.06); }
 }
 
 .celestial-modal-panel {

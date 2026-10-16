@@ -31,22 +31,25 @@ export function normalizeApparentAngle(baseAngle, currentSkyAngle) {
 }
 
 /**
- * Computes visibility factor for a celestial body based on horizon occultation.
- * Body is visible overhead when |apparentAngle| < 105 degrees (cos > -0.25).
+ * Computes visibility factor for a celestial body across the 360-degree dome.
+ * In-season constellations glow with full prominence (1.0), while opposite-season
+ * constellations remain visible as gentle background ambient stars (0.35).
  *
  * @param {number} apparentAngle Normalized apparent angle in radians
  * @returns {{ isVisible: boolean, factor: number }}
  */
 export function computeConstellationVisibility(apparentAngle) {
-  const cosAngle = Math.cos(apparentAngle);
-  const isVisible = cosAngle > -0.25;
-  const factor = isVisible ? Math.max(0, Math.min(1, (cosAngle + 0.25) / 0.85)) : 0;
-  return { isVisible: isVisible && factor > 0.02, factor };
+  // Graceful seasonal emphasis without cutting off the left half of the sky
+  const seasonalProminence = 0.65 + 0.35 * Math.cos(apparentAngle);
+  return { 
+    isVisible: true, 
+    factor: Math.max(0.25, Math.min(1.0, seasonalProminence)) 
+  };
 }
 
 /**
  * Computes 2D screen coordinates for a constellation anchor on the elliptical celestial dome.
- * Applies subtle zero-G orbital drift and mouse parallax.
+ * Distributes constellations naturally across left, center, right, top, and bottom.
  */
 export function computeConstellationScreenAnchor({
   centerX,
@@ -60,8 +63,9 @@ export function computeConstellationScreenAnchor({
   parallaxX = 0,
   parallaxY = 0,
 }) {
-  const orbitalRadiusX = width * radialDist * 1.15;
-  const orbitalRadiusY = height * radialDist * 1.05;
+  // Elliptical dome calibrated so constellations span both left (cos < 0) and right (cos > 0)
+  const orbitalRadiusX = width * radialDist * 0.95;
+  const orbitalRadiusY = height * radialDist * 0.88;
 
   const rawX = centerX + Math.cos(apparentAngle) * orbitalRadiusX;
   const rawY = centerY + Math.sin(apparentAngle) * orbitalRadiusY;

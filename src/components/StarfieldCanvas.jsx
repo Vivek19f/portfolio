@@ -107,29 +107,32 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
       }
 
       soundEngine.playSupernova();
-      shakeIntensity = 18;
+      shakeIntensity = 28;
+
+      // Trigger blinding fullscreen chromatic flash on top of UI
+      window.dispatchEvent(new CustomEvent('starfield-supernova-flash'));
 
       const particles = [];
-      const numParticles = 65;
+      const numParticles = 90;
       for (let i = 0; i < numParticles; i++) {
         const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 8 + 3;
+        const speed = Math.random() * 11 + 4;
         particles.push({
           x: sx,
           y: sy,
           vx: Math.cos(angle) * speed,
           vy: Math.sin(angle) * speed,
-          size: Math.random() * 3 + 1.5,
+          size: Math.random() * 4 + 2,
           color: Math.random() > 0.5 ? '#00f0ff' : Math.random() > 0.3 ? '#f59e0b' : '#ffffff',
           life: 0,
-          maxLife: Math.random() * 50 + 70,
+          maxLife: Math.random() * 60 + 80,
         });
       }
 
       supernova = {
         active: true,
         tick: 0,
-        maxTicks: 150,
+        maxTicks: 160,
         x: sx,
         y: sy,
         particles,
@@ -155,12 +158,24 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
       soundEngine.playMeteor();
       const currentMonth = stateRef.current.month;
       const shower = getActiveMeteorShower(currentMonth);
-      const count = 7;
+      const count = 14;
       for (let i = 0; i < count; i++) {
         setTimeout(() => {
           addShootingStar(true, shower);
-        }, i * 90);
+        }, i * 65);
       }
+
+      window.dispatchEvent(
+        new CustomEvent('celestial-event-toast', {
+          detail: {
+            type: 'meteor',
+            badge: '☄️ METEOR SHOWER BURST',
+            title: `${shower ? shower.name : 'Seasonal'} Meteor Shower Burst!`,
+            desc: `${shower ? shower.description : 'A barrage of ionization shooting stars streaks across the celestial dome.'}`,
+            duration: 5500,
+          },
+        })
+      );
     };
 
     const handleGlobalClick = (e) => {
@@ -227,27 +242,23 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
     const addShootingStar = (isBurst = false, shower = null) => {
       const activeShower = shower || getActiveMeteorShower(stateRef.current.month);
       const angle = activeShower
-        ? (activeShower.radiantAngle - currentSkyAngle) % (Math.PI * 2) + (Math.random() - 0.5) * 0.3
-        : Math.PI / 4 + (Math.random() - 0.5) * 0.25;
+        ? (activeShower.radiantAngle - currentSkyAngle) % (Math.PI * 2) + (Math.random() - 0.5) * 0.4
+        : Math.PI / 4 + (Math.random() - 0.5) * 0.35;
 
-      const startX = activeShower
-        ? width / 2 + Math.cos(angle) * (width * 0.3) + (Math.random() - 0.5) * width * 0.4
-        : Math.random() * width * 0.8;
-
-      const startY = activeShower
-        ? height / 2 + Math.sin(angle) * (height * 0.25) + (Math.random() - 0.5) * height * 0.3
-        : Math.random() * height * 0.4;
+      const startX = Math.random() * width;
+      const startY = Math.random() * (height * 0.7);
 
       shootingStars.push({
         x: startX,
         y: startY,
-        length: Math.random() * (isBurst ? 100 : 80) + 45,
-        speed: Math.random() * 7 + 8,
+        length: Math.random() * (isBurst ? 140 : 85) + 60,
+        speed: Math.random() * 8 + (isBurst ? 13 : 9),
         angle,
         alpha: 1,
         life: 0,
-        maxLife: Math.random() * 35 + 30,
+        maxLife: Math.random() * 40 + (isBurst ? 50 : 32),
         color: activeShower ? activeShower.color : '#00f0ff',
+        isBurst,
       });
     };
 
@@ -767,9 +778,22 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
         ctx.moveTo(s.x, s.y);
         ctx.lineTo(tailX, tailY);
         ctx.strokeStyle = grad;
-        ctx.lineWidth = 1.6;
+        ctx.lineWidth = s.isBurst ? 3.0 : 1.8;
         ctx.globalAlpha = s.alpha;
         ctx.stroke();
+
+        // Brilliant glowing meteor head
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.isBurst ? 2.8 : 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = s.alpha;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.isBurst ? 6.5 : 4.0, 0, Math.PI * 2);
+        ctx.fillStyle = s.color || '#00f0ff';
+        ctx.globalAlpha = s.alpha * 0.45;
+        ctx.fill();
 
         if (s.life >= s.maxLife) {
           shootingStars.splice(i, 1);
