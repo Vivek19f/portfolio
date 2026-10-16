@@ -16,7 +16,12 @@ export const CLI_COMMANDS = {
   • contact      : Communication channels & email link
   • bench        : Real-time browser environment & WebGL telemetry
   • cat /resume  : Work history & leadership summary
-  • sky          : Open Celestial Stardate Observer (month/year selector)
+  • sky          : Open Celestial Stardate Observer (month/year/day selector)
+  • eclipse      : Total Solar Eclipse & Coronal Flare Ring
+  • bloodmoon    : Blood Moon (Total Lunar Eclipse)
+  • supermoon    : Perigee Supermoon (+14% Size, Radiant Silver-Cyan)
+  • harvest      : Autumnal Harvest Moon (Golden Amber)
+  • bluemoon     : Rare Blue Moon (Cobalt Sapphire)
   • warp         : Trigger hyperspace starfield acceleration
   • meteor       : Launch seasonal meteor shower burst
   • supernova    : Betelgeuse Supernova Core Collapse (Easter Egg)
@@ -181,6 +186,108 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`,
 
   betelgeuse: {
     aliasOf: 'supernova',
+  },
+
+  eclipse: {
+    description: 'Toggle Total Solar Eclipse & Coronal Flare Ring',
+    execute: ({ playSuccess }) => {
+      playSuccess?.();
+      window.dispatchEvent(
+        new CustomEvent('celestial-set-lunar-mode', {
+          detail: { mode: 'solarEclipse' },
+        })
+      );
+      return [
+        {
+          type: 'success',
+          text: `[TOTAL SOLAR ECLIPSE ACTIVATED] Ambient light occluded. 1,500,000 K coronal flare ring ignited. Theme shifted to Coronal Gold. 🌑`,
+        },
+      ];
+    },
+  },
+
+  solareclipse: {
+    aliasOf: 'eclipse',
+  },
+
+  bloodmoon: {
+    description: 'Trigger Blood Moon (Total Lunar Eclipse)',
+    execute: ({ playSuccess }) => {
+      playSuccess?.();
+      window.dispatchEvent(
+        new CustomEvent('celestial-set-lunar-mode', {
+          detail: { mode: 'bloodMoon' },
+        })
+      );
+      return [
+        {
+          type: 'success',
+          text: `[BLOOD MOON ACTIVATED] Earth umbral shadow cast. Rayleigh atmospheric scattering active. Theme shifted to Copper Crimson. 🩸`,
+        },
+      ];
+    },
+  },
+
+  lunareclipse: {
+    aliasOf: 'bloodmoon',
+  },
+
+  supermoon: {
+    description: 'Engage Perigee Supermoon (+14% Size, Radiant Cyan)',
+    execute: ({ playSuccess }) => {
+      playSuccess?.();
+      window.dispatchEvent(
+        new CustomEvent('celestial-set-lunar-mode', {
+          detail: { mode: 'supermoon' },
+        })
+      );
+      return [
+        {
+          type: 'success',
+          text: `[PERIGEE SUPERMOON] Moon closest in orbit. +14% scale, +30% luminosity. Theme shifted to Radiant Silver-Cyan. 🌕`,
+        },
+      ];
+    },
+  },
+
+  harvest: {
+    description: 'Engage Autumnal Harvest Moon (Golden Amber)',
+    execute: ({ playSuccess }) => {
+      playSuccess?.();
+      window.dispatchEvent(
+        new CustomEvent('celestial-set-lunar-mode', {
+          detail: { mode: 'harvestMoon' },
+        })
+      );
+      return [
+        {
+          type: 'success',
+          text: `[HARVEST MOON] Equinox autumnal full moon rising. Theme shifted to Golden Amber. 🌾`,
+        },
+      ];
+    },
+  },
+
+  harvestmoon: {
+    aliasOf: 'harvest',
+  },
+
+  bluemoon: {
+    description: 'Engage Rare Blue Moon (Cobalt Sapphire)',
+    execute: ({ playSuccess }) => {
+      playSuccess?.();
+      window.dispatchEvent(
+        new CustomEvent('celestial-set-lunar-mode', {
+          detail: { mode: 'blueMoon' },
+        })
+      );
+      return [
+        {
+          type: 'success',
+          text: `[RARE BLUE MOON] Secondary synodic full moon in cycle. Theme shifted to Cobalt Sapphire. 💎`,
+        },
+      ];
+    },
   },
 };
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Compass, ChevronLeft, ChevronRight, Play, Pause, RotateCcw, 
-  Sparkles, X, Zap, Eye
+  Sparkles, X, Zap, Eye, Moon, Sun, Flame
 } from 'lucide-react';
 import { useSound } from '../hooks/useSound';
 import { useEscapeKey } from '../hooks/useEscapeKey';
@@ -11,6 +11,7 @@ import {
   isEasterSeason, 
   getEasterDate 
 } from '../data/celestialEvents';
+import { LUNAR_THEMES } from '../data/lunarCatalog';
 
 const MONTHS = [
   { short: 'JAN', full: 'January', season: 'Winter' },
@@ -32,6 +33,15 @@ export default function CelestialController({
   setMonth, 
   year, 
   setYear, 
+  day = 15,
+  setDay,
+  isSolarEclipse = false,
+  setIsSolarEclipse,
+  isBloodMoon = false,
+  setIsBloodMoon,
+  specialLunarType = null,
+  setSpecialLunarType,
+  lunarStatus,
   isAutoOrbit, 
   setIsAutoOrbit,
   isOpen,
@@ -88,6 +98,11 @@ export default function CelestialController({
     setYear((y) => Math.max(1970, Math.min(2080, y + delta)));
   };
 
+  const handleDayChange = (newDay) => {
+    const clamped = Math.max(1, Math.min(31, parseInt(newDay, 10) || 1));
+    setDay?.(clamped);
+  };
+
   const handleToggleOrbit = () => {
     playClick();
     setIsAutoOrbit((prev) => !prev);
@@ -98,6 +113,10 @@ export default function CelestialController({
     const now = new Date();
     setMonth(now.getMonth());
     setYear(now.getFullYear());
+    setDay?.(now.getDate());
+    setIsSolarEclipse?.(false);
+    setIsBloodMoon?.(false);
+    setSpecialLunarType?.(null);
     setIsAutoOrbit(false);
   };
 
@@ -113,7 +132,54 @@ export default function CelestialController({
     window.dispatchEvent(new CustomEvent('starfield-supernova'));
   };
 
+  const handleToggleSolarEclipse = () => {
+    playSuccess();
+    const next = !isSolarEclipse;
+    setIsSolarEclipse?.(next);
+    if (next) {
+      setIsBloodMoon?.(false);
+      setSpecialLunarType?.('solarEclipse');
+    } else {
+      setSpecialLunarType?.(null);
+    }
+  };
+
+  const handleToggleBloodMoon = () => {
+    playSuccess();
+    const next = !isBloodMoon;
+    setIsBloodMoon?.(next);
+    if (next) {
+      setIsSolarEclipse?.(false);
+      setSpecialLunarType?.('bloodMoon');
+    } else {
+      setSpecialLunarType?.(null);
+    }
+  };
+
+  const handleSelectSpecialLunar = (typeKey) => {
+    playTabSwitch();
+    if (typeKey === 'reset') {
+      setIsSolarEclipse?.(false);
+      setIsBloodMoon?.(false);
+      setSpecialLunarType?.(null);
+    } else if (typeKey === 'solarEclipse') {
+      setIsSolarEclipse?.(true);
+      setIsBloodMoon?.(false);
+      setSpecialLunarType?.('solarEclipse');
+    } else if (typeKey === 'bloodMoon') {
+      setIsSolarEclipse?.(false);
+      setIsBloodMoon?.(true);
+      setSpecialLunarType?.('bloodMoon');
+    } else {
+      setIsSolarEclipse?.(false);
+      setIsBloodMoon?.(false);
+      setSpecialLunarType?.(typeKey);
+    }
+  };
+
   if (!isOpen) return null;
+
+  const currentTheme = lunarStatus?.theme || LUNAR_THEMES.default;
 
   return (
     <AnimatePresence>
@@ -137,7 +203,7 @@ export default function CelestialController({
                   Celestial Stardate Observer
                 </h3>
                 <p className="text-xs text-muted-custom font-mono">
-                  {currentMonthData.full} {year} • {currentMonthData.season} Sky
+                  {currentMonthData.full} {day}, {year} • {currentMonthData.season} Sky
                 </p>
               </div>
             </div>
@@ -149,6 +215,150 @@ export default function CelestialController({
             >
               <X size={18} />
             </button>
+          </div>
+
+          {/* LUNAR PHASES & ECLIPSE COMMAND SECTION */}
+          <div className="celestial-lunar-section font-mono">
+            <div className="lunar-header-row">
+              <div className="lunar-title-group">
+                <span className="lunar-icon-large">{lunarStatus?.phaseIcon || '🌒'}</span>
+                <div>
+                  <div className="lunar-phase-name flex items-center gap-2">
+                    <span>{lunarStatus?.title || 'Waxing Moon'}</span>
+                    <span 
+                      className="lunar-theme-badge" 
+                      style={{ 
+                        borderColor: currentTheme.accent, 
+                        color: currentTheme.accent,
+                        boxShadow: `0 0 10px ${currentTheme.accentGlow}`
+                      }}
+                      title="The entire site theme adapts to this Moon's color spectrum"
+                    >
+                      <span className="theme-color-dot" style={{ backgroundColor: currentTheme.accent }} />
+                      Theme: {currentTheme.name.split(' (')[0]}
+                    </span>
+                  </div>
+                  <div className="lunar-metrics-text">
+                    {lunarStatus?.isSolar ? (
+                      <span className="text-amber-400 font-semibold">Totality Coronal Eclipse Active • 1,500,000 K Flare Ring</span>
+                    ) : (
+                      <span>Illumination: {lunarStatus?.illumination ?? 50}% • Age: {lunarStatus?.age ? lunarStatus.age.toFixed(1) : 15}d</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* View Sky / Dismiss Action */}
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                className="lunar-view-sky-btn"
+                title="Gaze at the active Moon and Constellations in the Starfield"
+              >
+                <Eye size={13} />
+                <span>Gaze Sky</span>
+              </button>
+            </div>
+
+            {/* Description Snippet */}
+            <p className="lunar-desc-text">
+              {lunarStatus?.desc || 'Astronomical Julian Day Conway epoch calculated lunar cycle.'}
+            </p>
+
+            {/* Day of Month Scrubber (Days 1 to 31) */}
+            <div className="lunar-scrubber-container">
+              <div className="scrubber-label-row">
+                <span className="scrubber-label">Lunar Phase Day Scrubber:</span>
+                <span className="scrubber-value text-accent">
+                  {currentMonthData.short} {day}, {year}
+                </span>
+              </div>
+              <div className="scrubber-controls-row">
+                <button
+                  type="button"
+                  onClick={() => handleDayChange(day - 1)}
+                  className="scrubber-step-btn"
+                  title="Previous Day (-1d)"
+                >
+                  -1d
+                </button>
+                <input
+                  type="range"
+                  min="1"
+                  max="31"
+                  value={day}
+                  onChange={(e) => handleDayChange(e.target.value)}
+                  className="lunar-range-slider"
+                  aria-label="Select lunar day"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleDayChange(day + 1)}
+                  className="scrubber-step-btn"
+                  title="Next Day (+1d)"
+                >
+                  +1d
+                </button>
+              </div>
+            </div>
+
+            {/* Eclipse & Special Full Moon Mode Toggles */}
+            <div className="lunar-modes-grid">
+              <button
+                type="button"
+                onClick={handleToggleSolarEclipse}
+                className={`lunar-mode-toggle eclipse-toggle ${isSolarEclipse ? 'mode-active-solar' : ''}`}
+                title="Occludes ambient light, casting deep space twilight with an incandescent coronal solar flare ring"
+              >
+                <Sun size={14} className={isSolarEclipse ? 'text-amber-400' : ''} />
+                <span className="mode-toggle-name">Total Solar Eclipse</span>
+                <span className="mode-toggle-badge">{isSolarEclipse ? 'ON' : 'OFF'}</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={handleToggleBloodMoon}
+                className={`lunar-mode-toggle blood-toggle ${isBloodMoon ? 'mode-active-blood' : ''}`}
+                title="Total Lunar Eclipse: Earth casts its umbra, scattering copper crimson light"
+              >
+                <Moon size={14} className={isBloodMoon ? 'text-rose-400' : ''} />
+                <span className="mode-toggle-name">Blood Moon (Eclipse)</span>
+                <span className="mode-toggle-badge">{isBloodMoon ? 'ON' : 'OFF'}</span>
+              </button>
+            </div>
+
+            {/* Special Moon Quick Selectors */}
+            <div className="lunar-special-chips">
+              <span className="text-[11px] text-muted-custom">Special Full Moon Types:</span>
+              <div className="chips-flex-row">
+                {[
+                  { key: 'supermoon', label: '🌕 Supermoon (+14% Size)', themeCol: '#22d3ee' },
+                  { key: 'harvestMoon', label: '🌾 Harvest Moon (Autumn Amber)', themeCol: '#f59e0b' },
+                  { key: 'blueMoon', label: '💎 Blue Moon (Cobalt)', themeCol: '#3b82f6' },
+                  { key: 'micromoon', label: '🌕 Micromoon (Apogee)', themeCol: '#38bdf8' },
+                  { key: 'reset', label: '🔄 Natural Epoch', themeCol: 'var(--accent)' },
+                ].map((item) => {
+                  const isSelected = item.key === 'reset' 
+                    ? (!isSolarEclipse && !isBloodMoon && !specialLunarType)
+                    : (specialLunarType === item.key && !isSolarEclipse && !isBloodMoon);
+
+                  return (
+                    <button
+                      key={item.key}
+                      type="button"
+                      onClick={() => handleSelectSpecialLunar(item.key)}
+                      className={`special-lunar-chip ${isSelected ? 'chip-active' : ''}`}
+                      style={{
+                        borderColor: isSelected ? item.themeCol : undefined,
+                      }}
+                    >
+                      <span className="chip-dot" style={{ backgroundColor: item.themeCol }} />
+                      <span>{item.label}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
           </div>
 
           {/* Active Celestial Event Banner */}
