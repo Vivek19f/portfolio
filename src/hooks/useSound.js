@@ -39,6 +39,14 @@ export function useSound() {
     soundEngine.playWarp();
   }, []);
 
+  const playMeteor = useCallback(() => {
+    soundEngine.playMeteor();
+  }, []);
+
+  const playSupernova = useCallback(() => {
+    soundEngine.playSupernova();
+  }, []);
+
   return {
     isSoundOn,
     toggleSound,
@@ -47,5 +55,7 @@ export function useSound() {
     playSuccess,
     playModalOpen,
     playWarp,
+    playMeteor,
+    playSupernova,
   };
 }

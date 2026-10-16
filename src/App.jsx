@@ -8,6 +8,7 @@ import CommandPalette from './components/CommandPalette';
 import MobileNav from './components/MobileNav';
 import PlaygroundModal from './components/PlaygroundModal';
 import CelestialController from './components/CelestialController';
+import CelestialEventToast from './components/CelestialEventToast';
 
 import { TABS, getTabTitle } from './data/tabs';
 import { useKeyboardShortcut } from './hooks/useKeyboardShortcut';
@@ -118,6 +119,9 @@ function App() {
         isOpen={isCelestialOpen}
         setIsOpen={setIsCelestialOpen}
       />
+
+      {/* Real-time Astronomical & Easter Egg Alerts */}
+      <CelestialEventToast />
 
       {/* ⌘K Navigation Console Modal */}
       <CommandPalette

@@ -18,6 +18,8 @@ export const CLI_COMMANDS = {
   • cat /resume  : Work history & leadership summary
   • sky          : Open Celestial Stardate Observer (month/year selector)
   • warp         : Trigger hyperspace starfield acceleration
+  • meteor       : Launch seasonal meteor shower burst
+  • supernova    : Betelgeuse Supernova Core Collapse (Easter Egg)
   • clear        : Clear console output history`,
       },
     ],
@@ -139,6 +141,46 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`,
 
   orbit: {
     aliasOf: 'sky',
+  },
+
+  meteor: {
+    description: 'Launch seasonal meteor shower burst',
+    execute: ({ playMeteor }) => {
+      playMeteor?.();
+      window.dispatchEvent(new CustomEvent('starfield-meteor-burst'));
+      return [
+        {
+          type: 'success',
+          text: `[METEOR SHOWER BURST] Generating radiant ionization dust streams... ☄️`,
+        },
+      ];
+    },
+  },
+
+  meteors: {
+    aliasOf: 'meteor',
+  },
+
+  supernova: {
+    description: 'Betelgeuse Supernova Core Collapse (Easter Egg)',
+    execute: ({ playSupernova }) => {
+      playSupernova?.();
+      window.dispatchEvent(new CustomEvent('starfield-supernova'));
+      return [
+        {
+          type: 'success',
+          text: `[COSMIC ANOMALY] Betelgeuse (Alpha Orionis) core collapse observed! 💥 Relativistic shockwave detonating...`,
+        },
+      ];
+    },
+  },
+
+  easter: {
+    aliasOf: 'supernova',
+  },
+
+  betelgeuse: {
+    aliasOf: 'supernova',
   },
 };
 

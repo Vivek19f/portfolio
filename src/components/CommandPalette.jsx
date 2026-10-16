@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Terminal, Search, Copy, CornerDownLeft, Sparkles
+  Terminal, Search, Copy, CornerDownLeft, Sparkles, Compass, Zap
 } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { useEscapeKey } from '../hooks/useEscapeKey';
@@ -10,7 +10,7 @@ import { executeCliCommand } from '../utils/commandRegistry';
 import { TABS } from '../data/tabs';
 
 export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGame }) {
-  const { playClick, playSuccess, playWarp } = useSound();
+  const { playClick, playSuccess, playWarp, playMeteor, playSupernova } = useSound();
   const [mode, setMode] = useState('menu'); // 'menu' | 'cli'
   const [search, setSearch] = useState('');
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -56,6 +56,41 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
         { id: 'code', label: 'Play Code Review: Spot the Bug', icon: Terminal, action: () => { playClick(); onOpenGame('code-review'); onClose(); } },
         { id: 'speedrun', label: 'Play Code Speedrun (Typing Test)', icon: Terminal, action: () => { playClick(); onOpenGame('speed-typer'); onClose(); } },
         { id: 'memory', label: 'Play Neural Memory Matrix', icon: Sparkles, action: () => { playClick(); onOpenGame('memory-matrix'); onClose(); } },
+      ]
+    },
+    {
+      category: "Celestial & Easter Egg Events",
+      items: [
+        {
+          id: 'betelgeuse-supernova',
+          label: '💥 Betelgeuse Supernova Core Collapse (Easter Egg)',
+          icon: Sparkles,
+          action: () => {
+            playSupernova();
+            window.dispatchEvent(new CustomEvent('starfield-supernova'));
+            onClose();
+          }
+        },
+        {
+          id: 'meteor-burst',
+          label: '☄️ Launch Seasonal Meteor Shower Burst',
+          icon: Zap,
+          action: () => {
+            playMeteor();
+            window.dispatchEvent(new CustomEvent('starfield-meteor-burst'));
+            onClose();
+          }
+        },
+        {
+          id: 'open-sky',
+          label: '🔭 Open Celestial Stardate Observer',
+          icon: Compass,
+          action: () => {
+            playClick();
+            window.dispatchEvent(new CustomEvent('starfield-open-observer'));
+            onClose();
+          }
+        }
       ]
     },
     {

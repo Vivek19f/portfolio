@@ -1,11 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Compass, ChevronLeft, ChevronRight, Play, Pause, RotateCcw, 
-  Sparkles, X, ChevronUp, ChevronDown 
+  Sparkles, X, Zap, Eye
 } from 'lucide-react';
 import { useSound } from '../hooks/useSound';
 import { useEscapeKey } from '../hooks/useEscapeKey';
+import { 
+  getActiveMeteorShower, 
+  isEasterSeason, 
+  getEasterDate 
+} from '../data/celestialEvents';
 
 const MONTHS = [
   { short: 'JAN', full: 'January', season: 'Winter' },
@@ -22,13 +27,6 @@ const MONTHS = [
   { short: 'DEC', full: 'December', season: 'Winter' },
 ];
 
-const PRESETS = [
-  { label: '❄️ Winter Orion', month: 0, year: 2026, desc: 'Orion, Sirius & Taurus' },
-  { label: '🌱 Spring Dipper', month: 3, year: 2026, desc: 'Ursa Major & Leo' },
-  { label: '☀️ Summer Triangle', month: 6, year: 2026, desc: 'Cygnus, Vega & Scorpius' },
-  { label: '🍂 Autumn Cassiopeia', month: 9, year: 2026, desc: 'Cassiopeia & Pegasus' },
-];
-
 export default function CelestialController({ 
   month, 
   setMonth, 
@@ -39,10 +37,10 @@ export default function CelestialController({
   isOpen,
   setIsOpen
 }) {
-  const { playClick, playTabSwitch, playSuccess } = useSound();
+  const { playClick, playTabSwitch, playSuccess, playMeteor, playSupernova } = useSound();
   const currentMonthData = MONTHS[month] || MONTHS[9];
 
-  // Reusable Escape key listener to close expanded HUD
+  // Reusable Escape key listener to close modal
   useEscapeKey(() => setIsOpen(false), isOpen);
 
   React.useEffect(() => {
@@ -50,6 +48,19 @@ export default function CelestialController({
     window.addEventListener('starfield-open-observer', handleOpen);
     return () => window.removeEventListener('starfield-open-observer', handleOpen);
   }, [setIsOpen]);
+
+  const activeShower = getActiveMeteorShower(month);
+  const isEaster = isEasterSeason(month, year);
+  const easterDate = getEasterDate(year);
+
+  const PRESETS = [
+    { label: '🍂 Autumn Cassiopeia', month: 9, year: 2026, desc: 'M31 Andromeda & Pegasus' },
+    { label: '❄️ Winter Orion', month: 0, year: 2026, desc: 'Betelgeuse, Sirius & M42' },
+    { label: '✨ The Pleiades M45', month: 10, year: 2026, desc: 'Seven Sisters & Taurus' },
+    { label: '🌱 Spring Dipper', month: 3, year: 2026, desc: 'Ursa Major & Leo' },
+    { label: '☀️ Summer Triangle', month: 6, year: 2026, desc: 'Cygnus, Vega & Scorpius' },
+    { label: '🥚 Easter Supernova', month: easterDate.month, year, desc: 'Betelgeuse Core Collapse' },
+  ];
 
   const handlePrevMonth = (e) => {
     e?.stopPropagation();
@@ -65,24 +76,20 @@ export default function CelestialController({
     setMonth((m) => (m === 11 ? 0 : m + 1));
   };
 
+  const handleSelectMonth = (mIdx) => {
+    playTabSwitch();
+    if (isAutoOrbit) setIsAutoOrbit(false);
+    setMonth(mIdx);
+  };
+
   const handleYearChange = (delta) => {
     playClick();
     if (isAutoOrbit) setIsAutoOrbit(false);
-    setYear((y) => Math.max(1990, Math.min(2035, y + delta)));
-  };
-
-  const handleSelectMonth = (idx) => {
-    playTabSwitch();
-    if (isAutoOrbit) setIsAutoOrbit(false);
-    setMonth(idx);
+    setYear((y) => Math.max(1970, Math.min(2080, y + delta)));
   };
 
   const handleToggleOrbit = () => {
-    if (!isAutoOrbit) {
-      playSuccess();
-    } else {
-      playClick();
-    }
+    playClick();
     setIsAutoOrbit((prev) => !prev);
   };
 
@@ -92,6 +99,17 @@ export default function CelestialController({
     setMonth(now.getMonth());
     setYear(now.getFullYear());
     setIsAutoOrbit(false);
+  };
+
+  const handleTriggerMeteorBurst = () => {
+    playMeteor();
+    window.dispatchEvent(new CustomEvent('starfield-meteor-burst'));
+  };
+
+  const handleTriggerSupernova = () => {
+    playSupernova();
+    setIsOpen(false);
+    window.dispatchEvent(new CustomEvent('starfield-supernova'));
   };
 
   if (!isOpen) return null;
@@ -132,6 +150,55 @@ export default function CelestialController({
             </button>
           </div>
 
+          {/* Active Celestial Event Banner */}
+          {activeShower && (
+            <div className="celestial-event-card shower-active font-mono">
+              <div className="event-info">
+                <span className="event-icon">☄️</span>
+                <div>
+                  <div className="event-title">{activeShower.name} Meteor Shower</div>
+                  <div className="event-subtitle">
+                    {activeShower.rate} • {activeShower.description}
+                  </div>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={handleTriggerMeteorBurst}
+                className="event-trigger-btn"
+                title="Launch a volley of shooting stars"
+              >
+                <Zap size={12} />
+                <span>Burst</span>
+              </button>
+            </div>
+          )}
+
+          {/* Easter Season Supernova Banner */}
+          <div className={`celestial-event-card easter-supernova-card font-mono ${isEaster ? 'easter-glowing' : ''}`}>
+            <div className="event-info">
+              <span className="event-icon">🥚</span>
+              <div>
+                <div className="event-title">
+                  {isEaster ? 'Easter Epoch: Betelgeuse Unstable Core' : 'Betelgeuse Supernova Easter Egg'}
+                </div>
+                <div className="event-subtitle">
+                  {isEaster 
+                    ? `Easter Sunday: ${MONTHS[easterDate.month].short} ${easterDate.day}, ${year} • Click to collapse core!`
+                    : `Works during Easter epoch (${MONTHS[easterDate.month].short} ${easterDate.day}) or click below:`}
+                </div>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={handleTriggerSupernova}
+              className="event-trigger-btn supernova-btn"
+              title="Trigger Betelgeuse Supernova Core Collapse"
+            >
+              <span>💥 Detonate</span>
+            </button>
+          </div>
+
           {/* Year Controls */}
           <div className="celestial-year-bar font-mono">
             <span className="text-xs text-muted-custom">Epoch Year:</span>
@@ -140,6 +207,7 @@ export default function CelestialController({
                 type="button" 
                 className="celestial-step-btn"
                 onClick={() => handleYearChange(-5)}
+                title="Rewind 5 years"
               >
                 -5y
               </button>
@@ -147,42 +215,48 @@ export default function CelestialController({
                 type="button" 
                 className="celestial-step-btn"
                 onClick={() => handleYearChange(-1)}
+                title="Rewind 1 year"
               >
-                <ChevronLeft size={13} />
+                -1y
               </button>
-              <span className="celestial-year-display text-accent font-bold px-2">
-                {year}
-              </span>
+              <span className="current-year-value">{year}</span>
               <button 
                 type="button" 
                 className="celestial-step-btn"
                 onClick={() => handleYearChange(1)}
+                title="Advance 1 year"
               >
-                <ChevronRight size={13} />
+                +1y
               </button>
               <button 
                 type="button" 
                 className="celestial-step-btn"
                 onClick={() => handleYearChange(5)}
+                title="Advance 5 years"
               >
                 +5y
               </button>
             </div>
           </div>
 
-          {/* 12-Month Interactive Grid */}
+          {/* Month Selector Grid */}
           <div className="celestial-months-grid font-mono">
             {MONTHS.map((m, idx) => {
-              const isActive = month === idx;
+              const isActive = idx === month;
+              const hasShower = !!getActiveMeteorShower(idx);
+              const isEasterMonth = idx === easterDate.month;
               return (
                 <button
                   key={m.short}
                   type="button"
                   onClick={() => handleSelectMonth(idx)}
-                  className={`celestial-month-chip ${isActive ? 'active-chip' : ''}`}
+                  className={`celestial-month-chip ${isActive ? 'active-chip' : ''} ${hasShower ? 'has-shower' : ''}`}
+                  title={`${m.full} (${m.season})${hasShower ? ' • Active Meteor Shower' : ''}${isEasterMonth ? ' • Easter Epoch' : ''}`}
                 >
                   <span className="month-chip-code">{m.short}</span>
-                  <span className="month-chip-season">{m.season[0]}</span>
+                  <span className="month-chip-season">
+                    {isEasterMonth ? '🥚' : hasShower ? '☄️' : m.season[0]}
+                  </span>
                 </button>
               );
             })}
@@ -190,7 +264,7 @@ export default function CelestialController({
 
           {/* Seasonal Quick Presets */}
           <div className="celestial-presets-section font-mono">
-            <span className="text-[11px] text-muted-custom">Seasonal Orientations:</span>
+            <span className="text-[11px] text-muted-custom">Celestial Presets & Deep-Sky:</span>
             <div className="celestial-presets-grid">
               {PRESETS.map((p) => {
                 const isSelected = month === p.month && year === p.year;
@@ -203,6 +277,9 @@ export default function CelestialController({
                       setMonth(p.month);
                       setYear(p.year);
                       if (isAutoOrbit) setIsAutoOrbit(false);
+                      if (p.label.includes('Supernova')) {
+                        setTimeout(() => handleTriggerSupernova(), 300);
+                      }
                     }}
                     className={`celestial-preset-btn ${isSelected ? 'active-preset' : ''}`}
                   >
