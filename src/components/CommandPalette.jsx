@@ -20,7 +20,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
   const [cliInput, setCliInput] = useState('');
   const [cliHistory, setCliHistory] = useState([
     { type: 'system', text: "Antigravity CLI v2.4.0 [x86_64-apple-darwin]" },
-    { type: 'system', text: "Type 'help' to inspect available system commands, or 'warp' for hyperspace." }
+    { type: 'system', text: "Type 'help' to inspect commands, or 'whoami', 'stack', 'bench'..." }
   ]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [enteredCommands, setEnteredCommands] = useState([]);
@@ -173,6 +173,27 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
       ...result.entries
     ]);
     setCliInput('');
+  };
+
+  const handleCliKeyDown = (e) => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (enteredCommands.length === 0) return;
+      const nextIdx = historyIndex === -1 ? enteredCommands.length - 1 : Math.max(0, historyIndex - 1);
+      setHistoryIndex(nextIdx);
+      setCliInput(enteredCommands[nextIdx]);
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIndex === -1) return;
+      const nextIdx = historyIndex + 1;
+      if (nextIdx >= enteredCommands.length) {
+        setHistoryIndex(-1);
+        setCliInput('');
+      } else {
+        setHistoryIndex(nextIdx);
+        setCliInput(enteredCommands[nextIdx]);
+      }
+    }
   };
 
   useEffect(() => {
@@ -332,6 +353,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
                   type="text"
                   value={cliInput}
                   onChange={e => setCliInput(e.target.value)}
+                  onKeyDown={handleCliKeyDown}
                   placeholder="type 'help', 'whoami', 'stack', 'bench'..."
                   className="cli-text-input font-mono"
                   autoFocus

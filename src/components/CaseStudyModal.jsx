@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ExternalLink, CheckCircle2, ArrowRight, ShieldCheck, Zap, GitBranch } from 'lucide-react';
+import { X, ExternalLink, ArrowRight, Zap, GitBranch } from 'lucide-react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { useSound } from '../hooks/useSound';
 

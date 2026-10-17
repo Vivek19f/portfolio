@@ -432,6 +432,26 @@ export default function ConstellationGame() {
             })}
           </g>
 
+          {/* Invalid Connection Flash Line */}
+          {invalidFlash && (() => {
+            const [u, v] = invalidFlash.split('-');
+            const p1 = currentLevel.stars.find((s) => s.id === u);
+            const p2 = currentLevel.stars.find((s) => s.id === v);
+            if (!p1 || !p2) return null;
+            return (
+              <line
+                x1={p1.x}
+                y1={p1.y}
+                x2={p2.x}
+                y2={p2.y}
+                stroke="#ef4444"
+                strokeWidth={3}
+                strokeDasharray="4 4"
+                className="animate-pulse"
+              />
+            );
+          })()}
+
           {/* Dynamic Rubber-Band Guide Line from Selected Star to Mouse */}
           {gameState === 'PLAYING' && selectedStarObj && (
             <line

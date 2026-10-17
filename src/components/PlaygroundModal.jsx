@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Sparkles } from 'lucide-react';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { getGameConfig } from './arcade/gameRegistry';
 
@@ -34,7 +34,16 @@ export default function PlaygroundModal({ gameId, onClose }) {
         </div>
 
         <div className="game-container custom-scrollbar">
-          <GameComponent />
+          <Suspense
+            fallback={
+              <div className="flex flex-col items-center justify-center p-12 gap-3 text-accent font-mono">
+                <Sparkles size={28} className="animate-spin text-accent" />
+                <span className="text-xs text-muted-custom">Loading Arcade Challenge...</span>
+              </div>
+            }
+          >
+            <GameComponent />
+          </Suspense>
         </div>
       </motion.div>
     </div>

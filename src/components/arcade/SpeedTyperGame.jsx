@@ -89,7 +89,7 @@ export default function SpeedTyperGame() {
       });
       setRecordResult(result);
     }
-  }, [isFinished]);
+  }, [isFinished, wpm, accuracy, correctChars]);
 
   const getRank = () => {
     if (wpm >= 85) return 'Staff 10x Engineer 🚀';

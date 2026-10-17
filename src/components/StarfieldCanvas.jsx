@@ -96,7 +96,7 @@ export default function StarfieldCanvas({ month = 9, year = 2026, isAutoOrbit = 
       }, 1600);
     };
 
-    const triggerSupernova = (customX, customY, isEasterTrigger = true) => {
+    const triggerSupernova = (customX, customY) => {
       // Find Betelgeuse screen coordinates if not passed
       let sx = customX;
       let sy = customY;

@@ -7,7 +7,7 @@ export default function QuickMathGame() {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [score, setScore] = useState(0);
   const [userAnswer, setUserAnswer] = useState('');
-  const [startTime, setStartTime] = useState(Date.now());
+  const [startTime, setStartTime] = useState(() => Date.now());
   const [elapsed, setElapsed] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -72,7 +72,7 @@ export default function QuickMathGame() {
       });
       setRecordResult(res);
     }
-  }, [isFinished]);
+  }, [isFinished, score, elapsed]);
 
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();

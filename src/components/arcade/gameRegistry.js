@@ -1,8 +1,10 @@
-import QuickMathGame from './QuickMathGame';
-import CodeReviewGame from './CodeReviewGame';
-import SpeedTyperGame from './SpeedTyperGame';
-import MemoryMatrixGame from './MemoryMatrixGame';
-import ConstellationGame from './ConstellationGame';
+import { lazy } from 'react';
+
+const QuickMathGame = lazy(() => import('./QuickMathGame'));
+const CodeReviewGame = lazy(() => import('./CodeReviewGame'));
+const SpeedTyperGame = lazy(() => import('./SpeedTyperGame'));
+const MemoryMatrixGame = lazy(() => import('./MemoryMatrixGame'));
+const ConstellationGame = lazy(() => import('./ConstellationGame'));
 
 /**
  * Registry of available arcade challenges.

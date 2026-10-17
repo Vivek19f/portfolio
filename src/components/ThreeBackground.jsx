@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { motion, useTransform, useMotionValue } from 'framer-motion';
 
 export default function ThreeBackground({ isSplineLoaded, setIsSplineLoaded, scrollY }) {
-  const [vantaEffect, setVantaEffect] = useState(null);
   const myRef = useRef(null);
+  const effectRef = useRef(null);
 
   // Framer motion values mapped to scroll position
   const scrollValue = useMotionValue(0);
@@ -18,8 +18,8 @@ export default function ThreeBackground({ isSplineLoaded, setIsSplineLoaded, scr
   const y = useTransform(scrollValue, [0, 500], [0, 150]);
 
   useEffect(() => {
-    setIsSplineLoaded(true);
-    let effect = null;
+    setIsSplineLoaded?.(true);
+    let isMounted = true;
     
     window.THREE = THREE;
     
@@ -27,8 +27,8 @@ export default function ThreeBackground({ isSplineLoaded, setIsSplineLoaded, scr
       try {
         await import('vanta/dist/vanta.globe.min');
         
-        if (!vantaEffect && window.VANTA && window.VANTA.GLOBE) {
-          effect = window.VANTA.GLOBE({
+        if (isMounted && !effectRef.current && window.VANTA && window.VANTA.GLOBE && myRef.current) {
+          effectRef.current = window.VANTA.GLOBE({
             el: myRef.current,
             mouseControls: true,
             touchControls: true,
@@ -42,7 +42,6 @@ export default function ThreeBackground({ isSplineLoaded, setIsSplineLoaded, scr
             size: 1.2,
             backgroundColor: 0x000000
           });
-          setVantaEffect(effect);
         }
       } catch (err) {
         console.error("Failed to load Vanta Globe", err);
@@ -52,10 +51,13 @@ export default function ThreeBackground({ isSplineLoaded, setIsSplineLoaded, scr
     loadVanta();
 
     return () => {
-      if (effect) effect.destroy();
-      if (vantaEffect) vantaEffect.destroy();
+      isMounted = false;
+      if (effectRef.current) {
+        effectRef.current.destroy();
+        effectRef.current = null;
+      }
     };
-  }, [vantaEffect, setIsSplineLoaded]);
+  }, [setIsSplineLoaded]);
 
   return (
     <motion.div 

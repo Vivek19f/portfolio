@@ -1,9 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { 
-  Compass, ChevronLeft, ChevronRight, Play, Pause, RotateCcw, 
-  Sparkles, X, Zap, Eye
-} from 'lucide-react';
+import { Compass, Play, Pause, RotateCcw, X, Zap } from 'lucide-react';
 import { useSound } from '../hooks/useSound';
 import { useEscapeKey } from '../hooks/useEscapeKey';
 import { 
@@ -37,7 +34,7 @@ export default function CelestialController({
   isOpen,
   setIsOpen
 }) {
-  const { playClick, playTabSwitch, playSuccess, playMeteor, playSupernova } = useSound();
+  const { playClick, playTabSwitch, playMeteor, playSupernova } = useSound();
   const currentMonthData = MONTHS[month] || MONTHS[9];
 
   // Reusable Escape key listener to close modal
@@ -61,20 +58,6 @@ export default function CelestialController({
     { label: '☀️ Summer Triangle', month: 6, year: 2026, desc: 'Cygnus, Vega & Scorpius' },
     { label: '🥚 Easter Supernova', month: easterDate.month, year, desc: 'Betelgeuse Core Collapse' },
   ];
-
-  const handlePrevMonth = (e) => {
-    e?.stopPropagation();
-    playClick();
-    if (isAutoOrbit) setIsAutoOrbit(false);
-    setMonth((m) => (m === 0 ? 11 : m - 1));
-  };
-
-  const handleNextMonth = (e) => {
-    e?.stopPropagation();
-    playClick();
-    if (isAutoOrbit) setIsAutoOrbit(false);
-    setMonth((m) => (m === 11 ? 0 : m + 1));
-  };
 
   const handleSelectMonth = (mIdx) => {
     playTabSwitch();
