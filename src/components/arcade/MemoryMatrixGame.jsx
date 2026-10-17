@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, RotateCcw, Check, X, Heart } from 'lucide-react';
+import { Trophy, RotateCcw, Check, X, Heart, Flame } from 'lucide-react';
 import { useSound } from '../../hooks/useSound';
+import { recordGameScore } from '../../utils/arcadeScores';
 
 export default function MemoryMatrixGame() {
   const { playClick, playSuccess, playModalOpen } = useSound();
@@ -12,6 +13,7 @@ export default function MemoryMatrixGame() {
   const [targetCells, setTargetCells] = useState(new Set());
   const [selectedCells, setSelectedCells] = useState(new Set());
   const [wrongCells, setWrongCells] = useState(new Set());
+  const [recordResult, setRecordResult] = useState(null);
 
   const getTileCount = (lvl) => Math.min(3 + (lvl - 1), 9);
 
@@ -79,10 +81,21 @@ export default function MemoryMatrixGame() {
     }
   };
 
+  useEffect(() => {
+    if (phase === 'GAME_OVER') {
+      const res = recordGameScore('memory-matrix', {
+        level,
+        score
+      });
+      setRecordResult(res);
+    }
+  }, [phase, level, score]);
+
   const restart = () => {
     setLevel(1);
     setScore(0);
     setLives(3);
+    setRecordResult(null);
     startRound(1);
   };
 
@@ -145,6 +158,12 @@ export default function MemoryMatrixGame() {
         <div className="game-finish-view">
           <Trophy size={48} className="text-accent animate-bounce" />
           <h3 className="finish-title">Neural Grid Results</h3>
+          {recordResult?.isNewRecord && (
+            <div className="new-record-banner font-mono">
+              <Flame size={14} className="text-amber-400 animate-pulse" />
+              <span>NEW PERSONAL BEST! {recordResult.isAuthorBeaten ? '🏆 Vivek\'s Record Beaten!' : ''}</span>
+            </div>
+          )}
           <p className="finish-desc font-mono">
             You reached <strong className="text-accent">Level {level}</strong> with a score of <strong className="text-accent">{score}</strong>!
           </p>

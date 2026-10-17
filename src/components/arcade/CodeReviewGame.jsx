@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, RotateCcw, Check, AlertCircle } from 'lucide-react';
+import { Trophy, RotateCcw, Check, AlertCircle, Flame } from 'lucide-react';
 import { useSound } from '../../hooks/useSound';
+import { recordGameScore } from '../../utils/arcadeScores';
 
 export default function CodeReviewGame() {
   const { playSuccess, playClick } = useSound();
@@ -61,6 +62,7 @@ export default function CodeReviewGame() {
   const [isCorrect, setIsCorrect] = useState(null);
   const [solved, setSolved] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
+  const [recordResult, setRecordResult] = useState(null);
 
   const handleLineClick = (lineIndex) => {
     if (isCorrect || isFinished) return;
@@ -85,12 +87,23 @@ export default function CodeReviewGame() {
     }
   };
 
+  useEffect(() => {
+    if (isFinished) {
+      const res = recordGameScore('code-review', {
+        solved,
+        total: SNIPPETS.length
+      });
+      setRecordResult(res);
+    }
+  }, [isFinished, solved]);
+
   const restart = () => {
     setSnippetIdx(0);
     setSelectedLine(null);
     setIsCorrect(null);
     setSolved(0);
     setIsFinished(false);
+    setRecordResult(null);
   };
 
   const current = SNIPPETS[snippetIdx];
@@ -101,6 +114,12 @@ export default function CodeReviewGame() {
         <div className="game-finish-view">
           <Trophy size={48} className="text-accent animate-bounce" />
           <h3 className="finish-title">Code Review Complete!</h3>
+          {recordResult?.isNewRecord && (
+            <div className="new-record-banner font-mono">
+              <Flame size={14} className="text-amber-400 animate-pulse" />
+              <span>NEW PERSONAL BEST! {recordResult.isAuthorBeaten ? '🏆 Vivek\'s Record Beaten!' : ''}</span>
+            </div>
+          )}
           <p className="finish-desc font-mono">
             You spotted all <strong className="text-accent">{solved} of {SNIPPETS.length}</strong> production defects!
           </p>

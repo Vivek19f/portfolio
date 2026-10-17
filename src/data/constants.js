@@ -210,6 +210,13 @@ export const SELECTED_WORK_DATA = [
 
 export const BUILT_FOR_FUN_DATA = [
   {
+    id: "constellation-connect",
+    name: "Constellation Connect",
+    description: "Link stars to reconstruct ancient constellations before your stardate chronometer expires.",
+    icon: "compass",
+    type: "celestial"
+  },
+  {
     id: "quick-math",
     name: "Quick Math",
     description: "Rapid-fire arithmetic. 20 questions. No hesitation. Beat my time.",

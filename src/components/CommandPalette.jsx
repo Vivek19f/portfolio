@@ -52,6 +52,7 @@ export default function CommandPalette({ isOpen, onClose, setActiveTab, onOpenGa
     {
       category: "Interactive Arcade",
       items: [
+        { id: 'constellation', label: 'Play Constellation Connect (Celestial Star Linker)', icon: Compass, action: () => { playClick(); onOpenGame('constellation-connect'); onClose(); } },
         { id: 'math', label: 'Play Quick Math Challenge', icon: Sparkles, action: () => { playClick(); onOpenGame('quick-math'); onClose(); } },
         { id: 'code', label: 'Play Code Review: Spot the Bug', icon: Terminal, action: () => { playClick(); onOpenGame('code-review'); onClose(); } },
         { id: 'speedrun', label: 'Play Code Speedrun (Typing Test)', icon: Terminal, action: () => { playClick(); onOpenGame('speed-typer'); onClose(); } },

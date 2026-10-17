@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, RotateCcw, ChevronRight } from 'lucide-react';
+import { Trophy, RotateCcw, ChevronRight, Flame } from 'lucide-react';
+import { recordGameScore } from '../../utils/arcadeScores';
 
 export default function SpeedTyperGame() {
   const CODE_SNIPPETS = [
@@ -27,6 +28,7 @@ export default function SpeedTyperGame() {
   const [timeLeft, setTimeLeft] = useState(TOTAL_TIME);
   const [isActive, setIsActive] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [recordResult, setRecordResult] = useState(null);
   const inputRef = useRef(null);
 
   const snippet = CODE_SNIPPETS[snippetIdx];
@@ -36,6 +38,7 @@ export default function SpeedTyperGame() {
     setTimeLeft(TOTAL_TIME);
     setIsActive(false);
     setIsFinished(false);
+    setRecordResult(null);
     if (inputRef.current) inputRef.current.focus();
   };
 
@@ -76,6 +79,17 @@ export default function SpeedTyperGame() {
   const correctChars = typed.split('').filter((c, i) => c === snippet.code[i]).length;
   const wpm = Math.round((correctChars / 5) / (elapsedSec / 60));
   const accuracy = typed.length > 0 ? Math.round((correctChars / typed.length) * 100) : 100;
+
+  useEffect(() => {
+    if (isFinished) {
+      const result = recordGameScore('speed-typer', {
+        wpm,
+        accuracy,
+        correctChars
+      });
+      setRecordResult(result);
+    }
+  }, [isFinished]);
 
   const getRank = () => {
     if (wpm >= 85) return 'Staff 10x Engineer 🚀';
@@ -129,6 +143,12 @@ export default function SpeedTyperGame() {
         <div className="game-finish-view">
           <Trophy size={48} className="text-accent animate-bounce" />
           <h3 className="finish-title">Speedrun Complete!</h3>
+          {recordResult?.isNewRecord && (
+            <div className="new-record-banner font-mono">
+              <Flame size={14} className="text-amber-400 animate-pulse" />
+              <span>NEW PERSONAL BEST! {recordResult.isAuthorBeaten ? '🏆 Vivek\'s Record Beaten!' : ''}</span>
+            </div>
+          )}
           <p className="text-accent font-bold font-mono text-lg mt-1">{getRank()}</p>
           
           <div className="finish-metrics mt-4">

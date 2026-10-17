@@ -1228,6 +1228,32 @@ button {
   color: #fff;
 }
 
+.new-record-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background: rgba(245, 158, 11, 0.15);
+  border: 1px solid rgba(245, 158, 11, 0.4);
+  color: #fbbf24;
+  font-size: 0.82rem;
+  font-weight: 600;
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.25);
+  animation: bannerPulse 2s infinite ease-in-out;
+}
+
+@keyframes bannerPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 25px rgba(245, 158, 11, 0.45);
+  }
+}
+
 .finish-desc {
   font-size: 1.05rem;
   color: var(--text-secondary);
@@ -1716,6 +1742,205 @@ button {
   background: rgba(239, 68, 68, 0.3) !important;
   border-color: #ef4444 !important;
   box-shadow: 0 0 12px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* ---------------- CONSTELLATION CONNECT (CELESTIAL ARCADE) ---------------- */
+.constellation-game-box {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.constellation-stats-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(13, 17, 28, 0.85);
+  border: 1px solid rgba(0, 240, 255, 0.15);
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.constellation-viewport-wrapper {
+  position: relative;
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+  background: radial-gradient(circle at 50% 40%, rgba(10, 20, 38, 0.95), rgba(4, 6, 12, 0.98));
+  border: 1px solid rgba(0, 240, 255, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.8), inset 0 0 35px rgba(0, 240, 255, 0.05);
+}
+
+.constellation-name-overlay {
+  position: absolute;
+  top: 14px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.constellation-svg-canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 280px;
+  max-height: 400px;
+}
+
+.constellation-star-group:hover circle:nth-child(4) {
+  transform-origin: center;
+  stroke-width: 2.5px;
+  stroke: #ffffff;
+  filter: drop-shadow(0 0 8px #00f0ff);
+}
+
+.connected-laser-line {
+  stroke-linecap: round;
+  animation: laserPulse 2s infinite ease-in-out;
+}
+
+@keyframes laserPulse {
+  0%, 100% {
+    stroke-opacity: 0.85;
+    filter: drop-shadow(0 0 4px #00f0ff);
+  }
+  50% {
+    stroke-opacity: 1;
+    filter: drop-shadow(0 0 10px #00f0ff);
+  }
+}
+
+.constellation-celebration-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 25;
+  background: rgba(4, 8, 18, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.celebration-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 32px;
+  border-radius: 16px;
+  background: rgba(13, 20, 35, 0.9);
+  border: 1px solid rgba(0, 240, 255, 0.35);
+  box-shadow: 0 0 40px rgba(0, 240, 255, 0.3);
+  text-align: center;
+}
+
+.game-overlay-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(4, 6, 12, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.game-ready-card,
+.game-finish-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 28px 24px;
+  border-radius: 18px;
+  background: rgba(13, 18, 30, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.9), 0 0 30px rgba(0, 240, 255, 0.15);
+}
+
+.ready-icon-halo {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 240, 255, 0.2), transparent 70%);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.game-rules-chips {
+  flex-wrap: wrap;
+}
+
+.rule-chip {
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.finish-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.stat-value {
+  font-size: 1.15rem;
+}
+
+.constellation-bottom-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 14px;
+  padding: 0 4px;
+  width: 100%;
+}
+
+.hint-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.hint-btn:hover {
+  background: rgba(0, 240, 255, 0.1);
+  border-color: rgba(0, 240, 255, 0.35);
+  color: #ffffff;
 }
 
 /* ---------------- COMMAND PALETTE (⌘K) ---------------- */

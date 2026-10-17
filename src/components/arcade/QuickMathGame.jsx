@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Trophy, RotateCcw } from 'lucide-react';
+import { Trophy, RotateCcw, Flame } from 'lucide-react';
+import { recordGameScore } from '../../utils/arcadeScores';
 
 export default function QuickMathGame() {
   const TOTAL_QUESTIONS = 10;
@@ -11,6 +12,7 @@ export default function QuickMathGame() {
   const [isFinished, setIsFinished] = useState(false);
   const [questions, setQuestions] = useState([]);
   const [feedback, setFeedback] = useState(null); // 'correct' | 'wrong'
+  const [recordResult, setRecordResult] = useState(null);
   const inputRef = useRef(null);
 
   const generateQuestions = () => {
@@ -46,6 +48,7 @@ export default function QuickMathGame() {
     setStartTime(Date.now());
     setElapsed(0);
     setFeedback(null);
+    setRecordResult(null);
   };
 
   useEffect(() => {
@@ -59,6 +62,17 @@ export default function QuickMathGame() {
     }, 100);
     return () => clearInterval(interval);
   }, [startTime, isFinished]);
+
+  useEffect(() => {
+    if (isFinished) {
+      const res = recordGameScore('quick-math', {
+        score,
+        time: parseFloat(elapsed),
+        total: TOTAL_QUESTIONS
+      });
+      setRecordResult(res);
+    }
+  }, [isFinished]);
 
   useEffect(() => {
     if (inputRef.current) inputRef.current.focus();
@@ -126,6 +140,12 @@ export default function QuickMathGame() {
         <div className="game-finish-view">
           <Trophy size={48} className="text-accent animate-bounce" />
           <h3 className="finish-title">Challenge Completed!</h3>
+          {recordResult?.isNewRecord && (
+            <div className="new-record-banner font-mono">
+              <Flame size={14} className="text-amber-400 animate-pulse" />
+              <span>NEW PERSONAL BEST! {recordResult.isAuthorBeaten ? '🏆 Vivek\'s Record Beaten!' : ''}</span>
+            </div>
+          )}
           <p className="finish-desc font-mono">
             You scored <strong className="text-accent">{score} / {TOTAL_QUESTIONS}</strong> in <strong className="text-accent">{elapsed}s</strong>!
           </p>

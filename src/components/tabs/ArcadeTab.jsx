@@ -1,18 +1,36 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Hash, Bug, ArrowRight, Play, Flame, Keyboard, Sparkles } from 'lucide-react';
+import { Hash, Bug, ArrowRight, Play, Flame, Keyboard, Sparkles, Compass, Trophy } from 'lucide-react';
 import PlaygroundModal from '../PlaygroundModal';
+import { getAllArcadeRecords } from '../../utils/arcadeScores';
 
 export default function ArcadeTab() {
   const [selectedGame, setSelectedGame] = useState(null);
+  const [records, setRecords] = useState(() => getAllArcadeRecords());
+
+  useEffect(() => {
+    const handleUpdate = () => {
+      setRecords(getAllArcadeRecords());
+    };
+    window.addEventListener('arcade-record-updated', handleUpdate);
+    return () => window.removeEventListener('arcade-record-updated', handleUpdate);
+  }, []);
 
   const games = [
+    {
+      id: 'constellation-connect',
+      title: 'Constellation Connect',
+      desc: 'Link stars to chart authentic ancient constellations across the cosmos before your stardate chronometer expires.',
+      icon: Compass,
+      defaultRecord: '6/6 Epochs (2,150 pts)',
+      tag: 'Celestial Challenge'
+    },
     {
       id: 'quick-math',
       title: 'Quick Math',
       desc: 'Rapid-fire mental arithmetic. 10 rapid questions. No hesitation. Beat my best time of 14.8 seconds.',
       icon: Hash,
-      record: '14.8s (Avg 0.74s/q)',
+      defaultRecord: '14.8s (Avg 0.74s/q)',
       tag: 'Speed Challenge'
     },
     {
@@ -20,7 +38,7 @@ export default function ArcadeTab() {
       title: 'Code Review Bug Spotter',
       desc: 'Three production code snippets, one bug each. Tap the exact line that breaks it.',
       icon: Bug,
-      record: '3/3 Bugs Caught',
+      defaultRecord: '3/3 Bugs Caught',
       tag: 'Bug Hunter'
     },
     {
@@ -28,7 +46,7 @@ export default function ArcadeTab() {
       title: 'Code Speedrun',
       desc: '30-second rapid syntax typing test with real TypeScript and Python snippets. Live WPM and accuracy metrics.',
       icon: Keyboard,
-      record: '98 WPM (99% Acc)',
+      defaultRecord: '98 WPM (99% Acc)',
       tag: 'Typing Challenge'
     },
     {
@@ -36,7 +54,7 @@ export default function ArcadeTab() {
       title: 'Neural Memory Matrix',
       desc: 'Memorize and recall flashing cyan tile patterns across 4×4 neural grids as complexity escalates.',
       icon: Sparkles,
-      record: 'Level 8 Cleared',
+      defaultRecord: 'Level 8 Cleared (1,200 pts)',
       tag: 'Working Memory'
     }
   ];
@@ -60,6 +78,10 @@ export default function ArcadeTab() {
       <div className="arcade-games-grid">
         {games.map((g) => {
           const IconComp = g.icon;
+          const recordData = records[g.id];
+          const recordLabel = recordData?.label || g.defaultRecord;
+          const isBeaten = recordData && !recordData.isAuthorBaseline;
+
           return (
             <div
               key={g.id}
@@ -79,9 +101,19 @@ export default function ArcadeTab() {
               <p className="arcade-card-desc">{g.desc}</p>
 
               <div className="arcade-card-footer font-mono">
-                <div className="flex items-center gap-1.5 text-xs text-muted-custom">
-                  <Flame size={14} className="text-accent" />
-                  <span>Record: <strong className="text-accent">{g.record}</strong></span>
+                <div className="flex items-center gap-1.5 text-xs text-muted-custom flex-wrap">
+                  <Flame size={14} className={isBeaten ? "text-amber-400 animate-pulse" : "text-accent"} />
+                  <span>
+                    {isBeaten ? 'Your Best: ' : 'Record: '}
+                    <strong className={isBeaten ? "text-amber-300 font-bold" : "text-accent"}>
+                      {recordLabel}
+                    </strong>
+                  </span>
+                  {isBeaten && (
+                    <span className="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-amber-400/15 border border-amber-400/30 text-amber-300">
+                      🏆 Best
+                    </span>
+                  )}
                 </div>
                 <button className="play-trigger-btn font-mono">
                   <span>Play</span>

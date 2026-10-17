@@ -2,6 +2,7 @@ import QuickMathGame from './QuickMathGame';
 import CodeReviewGame from './CodeReviewGame';
 import SpeedTyperGame from './SpeedTyperGame';
 import MemoryMatrixGame from './MemoryMatrixGame';
+import ConstellationGame from './ConstellationGame';
 
 /**
  * Registry of available arcade challenges.
@@ -9,6 +10,12 @@ import MemoryMatrixGame from './MemoryMatrixGame';
  * without modifying the modal container component.
  */
 export const GAME_REGISTRY = {
+  'constellation-connect': {
+    id: 'constellation-connect',
+    title: '✨ Constellation Connect',
+    roleBadge: '> Celestial_Challenge',
+    component: ConstellationGame,
+  },
   'quick-math': {
     id: 'quick-math',
     title: '⚡ Quick Math Challenge',
