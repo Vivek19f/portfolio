@@ -65,7 +65,7 @@ export const SELECTED_WORK_DATA = [
     category: "security",
     categoryLabel: "Security & Telemetry",
     description: "Interactive threat intelligence analytics engine mapping adversary tactics, techniques, and procedures (TTPs) across multi-dimensional matrices with real-time sub-16ms graph filtering.",
-    role: "Lead UI Architect",
+    role: "Lead Role",
     stack: ["React", "TypeScript", "Web Workers", "D3.js", "State Machines"],
     hasCaseStudy: true,
     details: "Enterprise threat intelligence platform",

@@ -91,7 +91,7 @@ Base: India (IST, UTC+5:30) • Open to Staff & Principal engineering roles.`,
       {
         type: 'output',
         text: `RESUME DIGEST:
-• Lead UI Architect (Cybersecurity Platform) - MITRE ATT&CK Matrix & TTP Analytics
+• UI (Cybersecurity Platform) - MITRE ATT&CK Matrix & TTP Analytics
 • Senior Software Engineer - Schema-Driven Ingestion Engine (50k rows/s)
 • Frontend Architect - Enterprise Micro-Frontend Migration (15+ codebases unified)
 • Publications: Technical blogs on distributed frontend state & real-time analytics`,
